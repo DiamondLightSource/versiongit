@@ -4,6 +4,6 @@ rhel7_job:
   variables:
     WORKON_HOME: /localhome/gitlab-runner/pipenv
   before_script:
-    - pipenv install --dev
+    - pipenv install --dev --python=/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin/dls-python3
   script:
     - pipenv run python -m pytest tests
