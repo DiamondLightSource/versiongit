@@ -1,6 +1,8 @@
 rhel7_job:
   tags:
     - rhel7
+  variables:
+    WORKON_HOME: /localhome/gitlab-runner/pipenv
   before_script:
     - pipenv install --dev
   script:
