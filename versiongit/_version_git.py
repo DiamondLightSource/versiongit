@@ -11,7 +11,7 @@ def get_version_from_git():
     git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
         # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
-        describe = check_output(git_cmd.split()).decode().strip()
+        describe = check_output(git_cmd.split(), stderr=None).decode().strip()
         if describe.endswith("-dirty"):
             describe = describe[:-6]
             dirty = ".dirty"

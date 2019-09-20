@@ -84,4 +84,12 @@ def test_tagged_version():
         assert repo.version() == "0+unknown.error"
 
 
-
+def test_post_tagged_version():
+    with TempRepo("master") as repo:
+        repo.checkout("b0b2eec")
+        assert repo.version() == "0.1+1.b0b2eec"
+        repo.make_dirty()
+        assert repo.version() == "0.1+1.b0b2eec.dirty"
+        assert repo.version_from_archive() == "0+unknown.b0b2eec"
+        repo.remove_git_dir()
+        assert repo.version() == "0+unknown.error"
