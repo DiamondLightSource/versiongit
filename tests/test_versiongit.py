@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import zipfile
 from subprocess import check_output
 from tempfile import mkdtemp
 
@@ -11,6 +12,7 @@ class TempRepo:
     def __init__(self, commit):
         # Check the current remotes, and checkout from the first
         self.dir = mkdtemp()
+        self.commit = commit
         remotes = check_output("git remote -v".split()).decode()
         first_remote = remotes.splitlines()[0].split()[1]
         command = "git clone --branch %s %s %s" % (
@@ -20,9 +22,24 @@ class TempRepo:
     def checkout(self, sha1):
         command = "git -C %s checkout %s" % (self.dir, sha1)
         check_output(command.split())
+        self.commit = sha1
 
-    def version(self):
-        script = os.path.join(self.dir, "versiongit", "command.py")
+    def version_from_archive(self):
+        archive_dir = mkdtemp()
+        archive = os.path.join(archive_dir, "archive.zip")
+        command = "git -C %s archive -o %s %s" % (
+            self.dir, archive, self.commit)
+        check_output(command.split())
+        with zipfile.ZipFile(archive) as z:
+            z.extractall(archive_dir)
+        version = self.version(archive_dir)
+        shutil.rmtree(archive_dir)
+        return version
+
+    def version(self, d=None):
+        if d is None:
+            d = self.dir
+        script = os.path.join(d, "versiongit", "command.py")
         version = check_output(
             [sys.executable, script, "--version"]).decode().strip()
         return version
@@ -39,8 +56,7 @@ class TempRepo:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        #shutil.rmtree(self.dir)
-        pass
+        shutil.rmtree(self.dir)
 
 
 def test_current_version_exists_and_is_str():
@@ -49,10 +65,13 @@ def test_current_version_exists_and_is_str():
 
 def test_pre_tagged_version():
     with TempRepo("master") as repo:
-        repo.checkout("395f1b4")
-        assert repo.version() == "0+untagged.395f1b4"
+        repo.checkout("b4b6df8")
+        assert repo.version() == "0+untagged.b4b6df8"
         repo.make_dirty()
-        assert repo.version() == "0+untagged.395f1b4.dirty"
+        assert repo.version() == "0+untagged.b4b6df8.dirty"
+        assert repo.version_from_archive() == "0+unknown.b4b6df8"
+        repo.remove_git_dir()
+        assert repo.version() == "0+unknown.error"
 
 
 def test_tagged_version():
