@@ -3,7 +3,7 @@ import sys
 from argparse import ArgumentParser
 
 
-def cli():
+def main():
     parser = ArgumentParser(
         description="Command line tool adding versiongit to python module")
     parser.add_argument("--version", action="store_true",
@@ -16,4 +16,4 @@ def cli():
 
 
 if __name__ == "__main__":
-    cli()
+    main()
