@@ -6,7 +6,7 @@ from subprocess import check_output, CalledProcessError
 
 
 def get_version_from_git():
-    tag, plus, dirty = "0.0", "unknown", ""
+    tag, plus, dirty = "0", "unknown", ""
     path = os.path.dirname(__file__)
     git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
@@ -18,10 +18,10 @@ def get_version_from_git():
         if "-" in describe:
             # There is a tag, extract it and the other pieces
             match = re.search(r'^(.+)-(\d+)-g([0-9a-f]+)$', describe)
-            tag, plus, md5 = match.groups()
+            tag, plus, sha1 = match.groups()
         else:
-            # No tag, just md5
-            plus, md5 = "unknown", describe
+            # No tag, just sha1
+            plus, sha1 = "untagged", describe
     except CalledProcessError:
         # not a git repo, maybe an archive
         tags = [t[5:].strip() for t in "$Format:%D$".split(",")
@@ -29,12 +29,12 @@ def get_version_from_git():
         if tags:
             tag = tags[0]
             plus = "0"
-        md5 = "$Format:%h$"
-        if md5.startswith("$"):
-            md5 = "error"
+        sha1 = "$Format:%h$"
+        if sha1.startswith("$"):
+            sha1 = "error"
     if plus != "0" or dirty:
         # Not on a tag, add additional info
-        return "%(tag)s+%(plus)s.%(md5)s%(dirty)s" % locals()
+        return "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
     else:
         # On a tag, just return it
         return tag
