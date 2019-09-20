@@ -33,7 +33,7 @@ class TempRepo:
         with zipfile.ZipFile(archive) as z:
             z.extractall(archive_dir)
         version = self.version(archive_dir)
-        #shutil.rmtree(archive_dir)
+        shutil.rmtree(archive_dir)
         return version
 
     def version(self, d=None):
@@ -86,10 +86,10 @@ def test_tagged_version():
 
 def test_post_tagged_version():
     with TempRepo("master") as repo:
-        repo.checkout("b0b2eec")
-        assert repo.version() == "0.1+1.b0b2eec"
+        repo.checkout("b9222df")
+        assert repo.version() == "0.1+2.b9222df"
         repo.make_dirty()
-        assert repo.version() == "0.1+1.b0b2eec.dirty"
-        assert repo.version_from_archive() == "0+unknown.b0b2eec"
+        assert repo.version() == "0.1+2.b9222df.dirty"
+        assert repo.version_from_archive() == "0+unknown.b9222df"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"

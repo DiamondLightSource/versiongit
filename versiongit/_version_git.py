@@ -2,7 +2,7 @@
 # <github-url-for-template-module>
 import os
 import re
-from subprocess import check_output, CalledProcessError
+from subprocess import check_output, CalledProcessError, PIPE
 
 
 def get_version_from_git():
@@ -11,7 +11,7 @@ def get_version_from_git():
     git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
         # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
-        describe = check_output(git_cmd.split(), stderr=None).decode().strip()
+        describe = check_output(git_cmd.split(), stderr=PIPE).decode().strip()
         if describe.endswith("-dirty"):
             describe = describe[:-6]
             dirty = ".dirty"
