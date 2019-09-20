@@ -24,7 +24,7 @@ def get_version_from_git():
             plus, sha1 = "untagged", describe
     except CalledProcessError:
         # not a git repo, maybe an archive
-        tags = [t[5:].strip() for t in "$Format:%D$".split(",")
+        tags = [t[5:] for t in "$Format:%D$".split(", ")
                 if t.startswith("tag: ")]
         if tags:
             tag = tags[0]
