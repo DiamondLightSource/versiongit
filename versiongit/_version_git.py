@@ -1,12 +1,14 @@
 # This file has been copied from:
 # <github-url-for-template-module>
-from subprocess import check_output, CalledProcessError
+import os
 import re
+from subprocess import check_output, CalledProcessError
 
 
 def get_version_from_git():
     tag, plus, dirty = "0.0", "unknown", ""
-    git_cmd = "git describe --tags --dirty --always --long"
+    path = os.path.dirname(__file__)
+    git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
         # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         describe = check_output(git_cmd.split()).decode().strip()
@@ -42,7 +44,6 @@ __version__ = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):
-    import os
     if build_py is None:
         from setuptools.command.build_py import build_py
     if sdist is None:
