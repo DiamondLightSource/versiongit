@@ -1,5 +1,3 @@
-# This file has been copied from:
-# <github-url-for-template-module>
 import os
 import re
 from subprocess import check_output, CalledProcessError, PIPE

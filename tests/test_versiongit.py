@@ -5,7 +5,19 @@ import zipfile
 from subprocess import check_output
 from tempfile import mkdtemp
 
+import pytest
+
+try:
+    import mock
+except ImportError:
+    from unittest.mock import Mock, patch
+
 import versiongit
+from versiongit._version_git import get_cmdclass
+from versiongit.command import main
+
+
+TOP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
 
 class TempRepo:
@@ -23,18 +35,6 @@ class TempRepo:
         command = "git -C %s checkout %s" % (self.dir, sha1)
         check_output(command.split())
         self.commit = sha1
-
-    def version_from_archive(self):
-        archive_dir = mkdtemp()
-        archive = os.path.join(archive_dir, "archive.zip")
-        command = "git -C %s archive -o %s %s" % (
-            self.dir, archive, self.commit)
-        check_output(command.split())
-        with zipfile.ZipFile(archive) as z:
-            z.extractall(archive_dir)
-        version = self.version(archive_dir)
-        shutil.rmtree(archive_dir)
-        return version
 
     def version(self, d=None):
         if d is None:
@@ -57,6 +57,45 @@ class TempRepo:
         shutil.rmtree(self.dir)
 
 
+class TempArchive:
+    def __init__(self):
+        self.dir = mkdtemp()
+        archive = os.path.join(self.dir, "archive.zip")
+        command = "git -C %s archive -o %s HEAD" % (TOP, archive)
+        check_output(command.split())
+        with zipfile.ZipFile(archive) as z:
+            z.extractall(self.dir)
+
+    def change_version(self, sha1, ref_names="HEAD -> master, github/master"):
+        path = os.path.join(self.dir, "versiongit", "_version_git.py")
+        with open(path) as f:
+            lines = f.readlines()
+        for i, line in enumerate(lines):
+            split = line.split(" = ")
+            if split[0] == "GIT_ARCHIVE_REF_NAMES":
+                split[1] = "'%s'\n" % ref_names
+            elif split[0] == "GIT_ARCHIVE_HASH":
+                split[1] = "'%s'\n" % sha1
+            else:
+                continue
+            lines[i] = " = ".join(split)
+        with open(path, "w") as f:
+            f.writelines(lines)
+
+    def version(self):
+        script = os.path.join(self.dir, "versiongit", "command.py")
+        version = check_output(
+            [sys.executable, script, "--version"]).decode().strip()
+        return version
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        shutil.rmtree(self.dir)
+        pass
+
+
 def test_current_version_exists_and_is_str():
     assert isinstance(versiongit.__version__, str)
 
@@ -67,7 +106,6 @@ def test_pre_tagged_version():
         assert repo.version() == "0+untagged.b4b6df8"
         repo.make_dirty()
         assert repo.version() == "0+untagged.b4b6df8.dirty"
-        #assert repo.version_from_archive() == "0+unknown.b4b6df8"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
 
@@ -77,7 +115,6 @@ def test_tagged_version():
         assert repo.version() == "0.1"
         repo.make_dirty()
         assert repo.version() == "0.1+0.8923f27.dirty"
-        #assert repo.version_from_archive() == "0.1"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
 
@@ -88,10 +125,169 @@ def test_post_tagged_version():
         assert repo.version() == "0.1+2.b9222df"
         repo.make_dirty()
         assert repo.version() == "0.1+2.b9222df.dirty"
-        #assert repo.version_from_archive() == "0+unknown.b9222df"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
 
 
 def test_archive_versions():
-    with TempRepo("master") as repo:
+    with TempArchive() as archive:
+        archive.change_version("8923f27", "HEAD -> master, tag: 0.1")
+        assert archive.version() == "0.1"
+        archive.change_version("b9222df")
+        assert archive.version() == "0+unknown.b9222df"
+
+
+@patch("versiongit._version_git.GIT_ARCHIVE_REF_NAMES", "tag: 0.1")
+def test_mocked_ref_archive_versions(tmpdir):
+    assert versiongit._version_git.get_version_from_git(tmpdir) == "0.1"
+
+
+@patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
+def test_mocked_hash_archive_versions(tmpdir):
+    assert versiongit._version_git.get_version_from_git(
+        tmpdir) == "0+unknown.1234567"
+
+
+def test_cmdclass_buildpy(tmpdir):
+    class BuildPy:
+        run = Mock(side_effect=lambda: tmpdir.mkdir("tst"))
+
+    cmdclass = get_cmdclass(build_py=BuildPy)
+
+    b_inst = cmdclass["build_py"]()
+    b_inst.packages = ["tst"]
+    b_inst.build_lib = tmpdir
+
+    b_inst.run()
+    expected = "__version__ = '%s'\n" % versiongit.__version__
+    assert expected == tmpdir.join("tst", "_version_static.py").read()
+    BuildPy.run.assert_called_once()
+
+
+def test_cmdclass_sdist(tmpdir):
+    def mk_pkg_dir(base_dir, files):
+        tmpdir.mkdir("tst")
+
+    class Sdist:
+        make_release_tree = Mock(side_effect=mk_pkg_dir)
+
+    cmdclass = get_cmdclass(sdist=Sdist)
+
+    b_inst = cmdclass["sdist"]()
+    b_inst.distribution = Mock(packages=["tst"])
+
+    b_inst.make_release_tree(tmpdir, [])
+    expected = "__version__ = '%s'\n" % versiongit.__version__
+    assert expected == tmpdir.join("tst", "_version_static.py").read()
+    Sdist.make_release_tree.assert_called_once_with(tmpdir, [])
+
+
+def test_no_command_args():
+    with patch("sys.argv", [sys.argv[0]]):
+        with pytest.raises(AssertionError) as excinfo:
+            main()
+    assert "Expected a python package directory, got None" == str(excinfo.value)
+
+
+def test_command_version(capsys):
+    with patch("sys.argv", [sys.argv[0], "--version"]):
+        main()
+    out, err = capsys.readouterr()
+    assert not err
+    assert out.strip() == versiongit.__version__
+
+
+def test_command_add_blank(capsys, tmpdir):
+    with patch("sys.argv", [sys.argv[0], str(tmpdir.mkdir("pkg"))]):
+        main()
+    lines = tmpdir.join("pkg", "_version_git.py").read().splitlines()
+    assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
+    out, err = capsys.readouterr()
+    assert not err
+    assert out == """Added %(d)s/pkg/_version_git.py
+
+Please add the following snippet to %(d)s/pkg/__init__.py:
+--------------------------------------------------------------------------------
+try:
+    # In a release there will be a static version file written by setup.py
+    from ._version_static import __version__
+except ImportError:
+    # Otherwise get the release number from git describe
+    from ._version_git import  __version__
+--------------------------------------------------------------------------------
+
+Please add the following snippet to %(d)s/.gitattributes:
+--------------------------------------------------------------------------------
+*/_version_git.py export-subst
+--------------------------------------------------------------------------------
+
+Please add the following snippet to %(d)s/setup.py:
+--------------------------------------------------------------------------------
+# Place the directory containing _version_git on the path
+for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
+    if "_version_git.py" in filenames:
+        sys.path.append(path)
+        break
+
+from _version_git import get_cmdclass, __version__
+
+setup(
+    cmdclass=get_cmdclass(),
+    version=__version__
+)
+--------------------------------------------------------------------------------
+
+""" % dict(d=tmpdir)
+
+
+def test_command_update(capsys, tmpdir):
+    pkg_dir = tmpdir.mkdir("pkg")
+    pkg_dir.join("_version_git.py").write("""
+Something that will be overwritten
+""")
+    pkg_dir.join("__init__.py").write("""
+# This is a file we wrote
+try:
+    # In a release there will be a static version file written by setup.py
+    from ._version_static import __version__
+except ImportError:
+    # Otherwise get the release number from git describe
+    from ._version_git import  __version__
+from blah import stuff  
+""")
+    tmpdir.join(".gitattributes").write("""
+* module-contact=fedid
+*/_version_git.py export-subst
+* something-else
+""")
+    tmpdir.join("setup.py").write("""
+import sys
+import os
+from setuptools import setup
+
+import pytest
+
+# Place the directory containing _version_git on the path
+for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
+    if "_version_git.py" in filenames:
+        sys.path.append(path)
+        break
+
+from _version_git import get_cmdclass, __version__
+
+# Setup information is stored in setup.cfg but this function call
+# is still necessary.
+setup(
+    cmdclass=get_cmdclass(),
+    install_requires=["mock"],
+    version=__version__,
+    extra=1,
+)
+""")
+    with patch("sys.argv", [sys.argv[0], str(pkg_dir)]):
+        main()
+    lines = tmpdir.join("pkg", "_version_git.py").read().splitlines()
+    assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
+    out, err = capsys.readouterr()
+    assert not err
+    assert out == "Added %s/_version_git.py\n\n" % pkg_dir

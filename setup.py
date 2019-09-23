@@ -14,4 +14,5 @@ from _version_git import get_cmdclass, __version__
 # is still necessary.
 setup(
     cmdclass=get_cmdclass(),
-    version=__version__)
+    version=__version__
+)
