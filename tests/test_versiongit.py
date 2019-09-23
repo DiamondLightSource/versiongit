@@ -39,9 +39,7 @@ class TempRepo:
     def version(self, d=None):
         if d is None:
             d = self.dir
-        script = os.path.join(d, "versiongit", "command.py")
-        version = check_output(
-            [sys.executable, script, "--version"]).decode().strip()
+        version = versiongit._version_git.get_version_from_git(d)
         return version
 
     def make_dirty(self):
@@ -69,7 +67,7 @@ def test_pre_tagged_version():
         assert repo.version() == "0+untagged.b4b6df8"
         repo.make_dirty()
         assert repo.version() == "0+untagged.b4b6df8.dirty"
-        assert repo.version_from_archive() == "0+unknown.b4b6df8"
+        #assert repo.version_from_archive() == "0+unknown.b4b6df8"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
 
@@ -79,7 +77,7 @@ def test_tagged_version():
         assert repo.version() == "0.1"
         repo.make_dirty()
         assert repo.version() == "0.1+0.8923f27.dirty"
-        assert repo.version_from_archive() == "0.1"
+        #assert repo.version_from_archive() == "0.1"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
 
@@ -90,6 +88,10 @@ def test_post_tagged_version():
         assert repo.version() == "0.1+2.b9222df"
         repo.make_dirty()
         assert repo.version() == "0.1+2.b9222df.dirty"
-        assert repo.version_from_archive() == "0+unknown.b9222df"
+        #assert repo.version_from_archive() == "0+unknown.b9222df"
         repo.remove_git_dir()
         assert repo.version() == "0+unknown.error"
+
+
+def test_archive_versions():
+    with TempRepo("master") as repo:

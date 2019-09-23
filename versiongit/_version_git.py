@@ -4,10 +4,16 @@ import os
 import re
 from subprocess import check_output, CalledProcessError, PIPE
 
+# These will be filled in if git archive is run
+GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
+GIT_ARCHIVE_HASH = "$Format:%h$"
 
-def get_version_from_git():
+
+def get_version_from_git(path=None):
+    if path is None:
+        # If no path, choose the directory this file is in
+        path = os.path.dirname(os.path.abspath(__file__))
     tag, plus, dirty = "0", "unknown", ""
-    path = os.path.dirname(__file__)
     git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
         # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
@@ -24,14 +30,15 @@ def get_version_from_git():
             plus, sha1 = "untagged", describe
     except CalledProcessError:
         # not a git repo, maybe an archive
-        tags = [t[5:] for t in "$Format:%D$".split(", ")
+        tags = [t[5:] for t in GIT_ARCHIVE_REF_NAMES.split(", ")
                 if t.startswith("tag: ")]
         if tags:
             tag = tags[0]
             plus = "0"
-        sha1 = "$Format:%h$"
-        if sha1.startswith("$"):
+        if GIT_ARCHIVE_HASH.startswith("$"):
             sha1 = "error"
+        else:
+            sha1 = GIT_ARCHIVE_HASH
     if plus != "0" or dirty:
         # Not on a tag, add additional info
         return "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
