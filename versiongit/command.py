@@ -23,10 +23,12 @@ def main():
 
     parser = ArgumentParser(
         description="Command line tool adding versiongit to python module")
-    parser.add_argument("--version", action="store_true",
-                        help="Print the current version of versiongit")
-    parser.add_argument("dir", nargs="?",
-                        help="The directory to add _version_git.py to")
+    parser.add_argument(
+        "--version", action="store_true",
+        help="Print the current version of versiongit")
+    parser.add_argument(
+        "dir", nargs="?",
+        help="The directory to add _version_git.py to")
     args = parser.parse_args()
     if args.version:
         print(__version__)
