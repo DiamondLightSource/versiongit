@@ -22,20 +22,19 @@ def get_version_from_git(path=None):
             dirty = ".dirty"
         if "-" in describe:
             # There is a tag, extract it and the other pieces
-            match = re.search(r'^(.+)-(\d+)-g([0-9a-f]+)$', describe)
+            match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", describe)
             tag, plus, sha1 = match.groups()
         else:
             # No tag, just sha1
             plus, sha1 = "untagged", describe
     except CalledProcessError:
         # Not a git repo, maybe an archive
-        tags = [t[5:] for t in GIT_ARCHIVE_REF_NAMES.split(", ")
-                if t.startswith("tag: ")]
-        if tags:
-            # On a tag, so sha1 is ignored
-            tag, plus = tags[0], "0"
-        elif not GIT_ARCHIVE_HASH.startswith("$"):
-            # Not on a tag, but git archive has written a sha1 for us to use
+        for ref_name in GIT_ARCHIVE_REF_NAMES.split(", "):
+            if ref_name.startswith("tag: "):
+                # On a git archive tag
+                tag, plus = ref_name[5:], "0"
+        if not GIT_ARCHIVE_HASH.startswith("$"):
+            # git archive has written a sha1 for us to use
             sha1 = GIT_ARCHIVE_HASH
     if plus != "0" or dirty:
         # Not on a tag, add additional info

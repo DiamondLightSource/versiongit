@@ -27,8 +27,7 @@ class TempRepo:
         self.commit = commit
         remotes = check_output("git remote -v".split()).decode()
         first_remote = remotes.splitlines()[0].split()[1]
-        command = "git clone --branch %s %s %s" % (
-            commit, first_remote, self.dir)
+        command = "git clone --branch %s %s %s" % (commit, first_remote, self.dir)
         check_output(command.split())
 
     def checkout(self, sha1):
@@ -84,8 +83,7 @@ class TempArchive:
 
     def version(self):
         script = os.path.join(self.dir, "versiongit", "command.py")
-        version = check_output(
-            [sys.executable, script, "--version"]).decode().strip()
+        version = check_output([sys.executable, script, "--version"]).decode().strip()
         return version
 
     def __enter__(self):
@@ -144,8 +142,7 @@ def test_mocked_ref_archive_versions(tmpdir):
 
 @patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
 def test_mocked_hash_archive_versions(tmpdir):
-    assert versiongit._version_git.get_version_from_git(
-        tmpdir) == "0+unknown.1234567"
+    assert versiongit._version_git.get_version_from_git(tmpdir) == "0+unknown.1234567"
 
 
 def test_cmdclass_buildpy(tmpdir):
@@ -165,11 +162,8 @@ def test_cmdclass_buildpy(tmpdir):
 
 
 def test_cmdclass_sdist(tmpdir):
-    def mk_pkg_dir(base_dir, files):
-        tmpdir.mkdir("tst")
-
     class Sdist:
-        make_release_tree = Mock(side_effect=mk_pkg_dir)
+        make_release_tree = Mock(side_effect=lambda b, f: tmpdir.mkdir("tst"))
 
     cmdclass = get_cmdclass(sdist=Sdist)
 
@@ -204,7 +198,9 @@ def test_command_add_blank(capsys, tmpdir):
     assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
     out, err = capsys.readouterr()
     assert not err
-    assert out == """Added %(d)s/pkg/_version_git.py
+    assert (
+        out
+        == """Added %(d)s/pkg/_version_git.py
 
 Please add the following snippet to %(d)s/pkg/__init__.py:
 --------------------------------------------------------------------------------
@@ -213,7 +209,7 @@ try:
     from ._version_static import __version__
 except ImportError:
     # Otherwise get the release number from git describe
-    from ._version_git import  __version__
+    from ._version_git import __version__
 --------------------------------------------------------------------------------
 
 Please add the following snippet to %(d)s/.gitattributes:
@@ -237,30 +233,39 @@ setup(
 )
 --------------------------------------------------------------------------------
 
-""" % dict(d=tmpdir)
+"""
+        % dict(d=tmpdir)
+    )
 
 
 def test_command_update(capsys, tmpdir):
     pkg_dir = tmpdir.mkdir("pkg")
-    pkg_dir.join("_version_git.py").write("""
+    pkg_dir.join("_version_git.py").write(
+        """
 Something that will be overwritten
-""")
-    pkg_dir.join("__init__.py").write("""
+"""
+    )
+    pkg_dir.join("__init__.py").write(
+        """
 # This is a file we wrote
 try:
     # In a release there will be a static version file written by setup.py
     from ._version_static import __version__
 except ImportError:
     # Otherwise get the release number from git describe
-    from ._version_git import  __version__
+    from ._version_git import __version__
 from blah import stuff  
-""")
-    tmpdir.join(".gitattributes").write("""
+"""
+    )
+    tmpdir.join(".gitattributes").write(
+        """
 * module-contact=fedid
 */_version_git.py export-subst
 * something-else
-""")
-    tmpdir.join("setup.py").write("""
+"""
+    )
+    tmpdir.join("setup.py").write(
+        """
 import sys
 import os
 from setuptools import setup
@@ -283,7 +288,8 @@ setup(
     version=__version__,
     extra=1,
 )
-""")
+"""
+    )
     with patch("sys.argv", [sys.argv[0], str(pkg_dir)]):
         main()
     lines = tmpdir.join("pkg", "_version_git.py").read().splitlines()
