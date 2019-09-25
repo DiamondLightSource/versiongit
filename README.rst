@@ -41,7 +41,7 @@ See CONTRIBUTING_
 License
 -------
 To make VersionGit easier to embed, all its code is dedicated to the public
-domain. The `_version_git.py` that it creates is also in the public domain.
+domain. The ``_version_git.py`` that it creates is also in the public domain.
 Specifically, both are released under the Creative Commons
 "Public Domain Dedication" license (CC0-1.0), as described in LICENSE_
 

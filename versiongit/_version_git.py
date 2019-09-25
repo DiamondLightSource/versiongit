@@ -8,10 +8,11 @@ GIT_ARCHIVE_HASH = "$Format:%h$"
 
 
 def get_version_from_git(path=None):
+    """Try to parse version from git describe, fallback to git archive tags"""
     if path is None:
-        # If no path, choose the directory this file is in
+        # If no path to git repo, choose the directory this file is in
         path = os.path.dirname(os.path.abspath(__file__))
-    tag, plus, dirty = "0", "unknown", ""
+    tag, plus, sha1, dirty = "0", "unknown", "error", ""
     git_cmd = "git -C %s describe --tags --dirty --always --long" % path
     try:
         # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
@@ -27,15 +28,14 @@ def get_version_from_git(path=None):
             # No tag, just sha1
             plus, sha1 = "untagged", describe
     except CalledProcessError:
-        # not a git repo, maybe an archive
+        # Not a git repo, maybe an archive
         tags = [t[5:] for t in GIT_ARCHIVE_REF_NAMES.split(", ")
                 if t.startswith("tag: ")]
         if tags:
-            tag = tags[0]
-            plus = "0"
-        if GIT_ARCHIVE_HASH.startswith("$"):
-            sha1 = "error"
-        else:
+            # On a tag, so sha1 is ignored
+            tag, plus = tags[0], "0"
+        elif not GIT_ARCHIVE_HASH.startswith("$"):
+            # Not on a tag, but git archive has written a sha1 for us to use
             sha1 = GIT_ARCHIVE_HASH
     if plus != "0" or dirty:
         # Not on a tag, add additional info
@@ -49,6 +49,8 @@ __version__ = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):
+    """Create cmdclass dict to pass to setuptools.setup that will write a
+    _version_static.py file in our resultant sdist, wheel or egg"""
     if build_py is None:
         from setuptools.command.build_py import build_py
     if sdist is None:
