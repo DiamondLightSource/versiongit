@@ -6,16 +6,11 @@ from subprocess import check_output
 from tempfile import mkdtemp
 
 import pytest
-
-try:
-    import mock
-except ImportError:
-    from unittest.mock import Mock, patch
+from mock import Mock, patch
 
 import versiongit
 from versiongit._version_git import get_cmdclass
 from versiongit.command import main
-
 
 TOP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
@@ -206,7 +201,7 @@ Please add the following snippet to %(d)s/pkg/__init__.py:
 --------------------------------------------------------------------------------
 try:
     # In a release there will be a static version file written by setup.py
-    from ._version_static import __version__
+    from ._version_static import __version__  # type: ignore
 except ImportError:
     # Otherwise get the release number from git describe
     from ._version_git import __version__
@@ -250,11 +245,11 @@ Something that will be overwritten
 # This is a file we wrote
 try:
     # In a release there will be a static version file written by setup.py
-    from ._version_static import __version__
+    from ._version_static import __version__  # type: ignore
 except ImportError:
     # Otherwise get the release number from git describe
     from ._version_git import __version__
-from blah import stuff  
+from blah import stuff
 """
     )
     tmpdir.join(".gitattributes").write(
