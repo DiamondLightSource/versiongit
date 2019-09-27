@@ -13,4 +13,4 @@ Unreleased_
 
 - Initial release
 
-.. _Unreleased: https://github.com/dls-controls/pymalcolm/compare/0.1...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.1...HEAD

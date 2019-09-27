@@ -62,7 +62,7 @@ Docs follow the underlining convention::
 You can build the docs from the project directory by running::
 
     $ pipenv run docs
-    $ firefox docs/_build/html/index.html
+    $ firefox build/html/index.html
 
 Release Checklist
 -----------------

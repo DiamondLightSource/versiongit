@@ -9,8 +9,8 @@ Contents
 .. toctree::
     :caption: Reference
 
-    api
-    contributing
-    release_notes
+    reference/api
+    reference/contributing
+    reference/release_notes
 
 * :ref:`genindex`

@@ -1,90 +1,44 @@
-Malcolm
-=======
+VersionGit
+==========
 
-Malcolm is a middlelayer framework that implements high level configure/run
-behaviour of control system components like those used in continuous scans.
-This `repository`_ contains a Python implementation (pymalcolm) allowing the
-creation of Malcolm servers and clients. There is also a `malcolmjs`_
-JavaScript client and a Java client in `GDA`_.
+VersionGit is a tool for managing the version number of Python modules, removing
+the need to update an embedded version string whenever a Git tag is made, and
+providing sensible development version numbers too. It does this by storing a
+single file in the source repo that reads the version from ``git describe`` or
+``git archive`` keywords. At build time, a second file will be created that
+contains a static version number to be used in preference to this. This tool is
+inspired by versioneer_, but has a vastly reduced feature set so that the code
+stored in each module is minimal.
 
-Malcolm was created as part of the `Mapping project`_ at `Diamond Light Source`_
-in order to improve the performance of continuous scanning.
+How it works
+------------
 
-What can Malcolm do?
---------------------
+The commandline ``versiongit`` tool can be used to place a ``_version_git.py``
+in your repository. This can be used at development time to generate a sensible
+PEP440 compliant version number accessible as ``yourmodule.__version__``:
 
-Malcolm provides a layer on top of `EPICS`_ that wraps up groups of `PVs`_ and
-presents a higher level scanning interface to `GDA`_ via `pvAccess`_.
-
-.. digraph:: malcolm_dls_usage
+.. digraph:: development
 
     bgcolor=transparent
-    node [fontname=Arial fontsize=10 shape=box style=filled fillcolor="#8BC4E9"]
+    node [fontname=Arial fontsize=10 shape=box style=filled fillcolor="#f54d27"]
     edge [fontname=Arial fontsize=10 arrowhead=vee]
 
-    {rank=same;Detector EPICS "HDF File"}
+    vg [label="yourmodule._version_git"]
+    v [label="yourmodule.__version__"]
 
-    Malcolm [shape=doublecircle]
+    vg -> Git [label="describe --tags ..."]
+    Git -> vg [label="0.1-3-gabc1234"]
+    vg -> v [label="0.1+3.abc1234"]
 
-    GDA -> Malcolm [label="scan.configure()\nscan.run()"]
-    Malcolm -> EPICS [label="caput\ncamonitor"]
-    Detector -> EPICS [label="Frame data"]
-    EPICS -> "HDF File" [label="Frame data"]
-    EPICS -> "Motor Controller" [label="Motion trajectory"]
+Usage
+-----
 
+To install the latest release, type::
 
-Malcolm was developed for continuous scanning and the diagram above shows
-how Diamond uses it, but it can also be used in other ways:
+    pip install versiongit
 
-* As a library that can be used in continuous scanning scripts without acting
-  as a server
-* As a webserver, exposing a web GUI for configuring the underlying hardware
-  that communicates to Malcolm using `JSON`_ over `websockets`_
-* As a distributed object system, using either `pvAccess`_ or `websockets`_ to
-  communicate and synchronise objects between multiple Malcolm processes
+You can then use the commandline ``versiongit`` tool to install a
+``_version_git.py``
 
-How is the documentation structured?
-------------------------------------
-
-The documentation is structured into a series of `tutorials-doc` and some
-general `reference-doc` documentation. End users and developers need different
-documentation, so links for various categories of user are listed below:
-
-Configuring Malcolm to work with your hardware
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Work through the `tutorials-doc` then look at the `malcolm.modules` API
-documentation to see what arguments need to be passed to each object in the YAML
-file.
-
-Controlling Malcolm via comms protocols
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Read the `hello_tutorial`, then look at the `block_structure` and
-`message_structure` sections. The `malcolm.modules.pva` module contains some
-pvAccess specific documentation. The `RunnableStates` statemachine will also
-be of interest.
-
-
-.. _installation_guide:
-
-Installation Guide
-------------------
-
-For now, in a Diamond environment just run::
-
-    git clone https://github.com/dls-controls/pymalcolm
-
-All optional modules are already installed and available
-
-
-.. _repository:
-    https://github.com/dls-controls/pymalcolm
-
-.. _malcolmjs:
-    https://github.com/dls-controls/malcolmjs
-
-.. _Mapping project:
-    https://indico.esss.lu.se/event/357/session/8/contribution/63
-
-
+.. _versioneer:
+    https://github.com/warner/python-versioneer

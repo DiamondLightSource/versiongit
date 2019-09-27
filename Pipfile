@@ -20,4 +20,4 @@ allow_prereleases = true
 [scripts]
 # Put the coverage options here, not setup.cfg, so PyCharm coverage still works
 tests = "python -m pytest tests --cov=versiongit --cov-fail-under=90"
-docs = "sphinx-build -b html -nEW docs docs/_build/html"
+docs = "sphinx-build -b html -nEW docs build/html"

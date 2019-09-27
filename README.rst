@@ -24,6 +24,7 @@ Available from https://github.com/dls-controls/versiongit
 
 Installation
 ------------
+
 To install the latest release, type::
 
     pip install versiongit
