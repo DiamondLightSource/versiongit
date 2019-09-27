@@ -13,6 +13,7 @@ mypy = "*"
 sphinx_rtd_theme = "*"
 
 [packages]
+cothread = "*"
 
 [pipenv]
 allow_prereleases = true
