@@ -7,6 +7,7 @@ Unreleased_
 -----------
 
 - Added support for git archive output
+- Added git_error and git_sha1 variables for debugging
 
 0.1 - 2019-09-20
 ----------------

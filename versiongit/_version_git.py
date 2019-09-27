@@ -12,39 +12,39 @@ def get_version_from_git(path=None):
     if path is None:
         # If no path to git repo, choose the directory this file is in
         path = os.path.dirname(os.path.abspath(__file__))
-    tag, plus, sha1, dirty = "0", "unknown", "error", ""
-    git_cmd = "git -C %s describe --tags --dirty --always --long" % path
-    try:
-        # describe is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
-        describe = check_output(git_cmd.split(), stderr=PIPE).decode().strip()
-        if describe.endswith("-dirty"):
-            describe = describe[:-6]
-            dirty = ".dirty"
-        if "-" in describe:
-            # There is a tag, extract it and the other pieces
-            match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", describe)
-            tag, plus, sha1 = match.groups()
-        else:
-            # No tag, just sha1
-            plus, sha1 = "untagged", describe
-    except CalledProcessError:
-        # Not a git repo, maybe an archive
+    tag, plus, sha1, dirty, error = "0", "unknown", "error", "", None
+    if not GIT_ARCHIVE_HASH.startswith("$"):
+        # git archive has written a sha1 for us to use
+        sha1 = GIT_ARCHIVE_HASH
         for ref_name in GIT_ARCHIVE_REF_NAMES.split(", "):
             if ref_name.startswith("tag: "):
                 # On a git archive tag
                 tag, plus = ref_name[5:], "0"
-        if not GIT_ARCHIVE_HASH.startswith("$"):
-            # git archive has written a sha1 for us to use
-            sha1 = GIT_ARCHIVE_HASH
+    else:
+        git_cmd = "git -C %s describe --tags --dirty --always --long" % path
+        # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
+        try:
+            output = check_output(git_cmd.split(), stderr=PIPE).decode().strip()
+        except CalledProcessError as e:
+            error = e.stderr.decode().strip()
+        else:
+            if output.endswith("-dirty"):
+                output = output[:-6]
+                dirty = ".dirty"
+            if "-" in output:
+                # There is a tag, extract it and the other pieces
+                match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", output)
+                tag, plus, sha1 = match.groups()
+            else:
+                # No tag, just sha1
+                plus, sha1 = "untagged", output
     if plus != "0" or dirty:
         # Not on a tag, add additional info
-        return "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
-    else:
-        # On a tag, just return it
-        return tag
+        tag = "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
+    return tag, error, sha1
 
 
-__version__ = get_version_from_git()
+__version__, git_error, git_sha1 = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):

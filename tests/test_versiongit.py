@@ -93,33 +93,36 @@ def test_current_version_exists_and_is_str():
     assert isinstance(versiongit.__version__, str)
 
 
+ERR = "fatal: Not a git repository (or any of the parent directories): .git"
+
+
 def test_pre_tagged_version():
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
-        assert repo.version() == "0+untagged.b4b6df8"
+        assert repo.version() == ("0+untagged.b4b6df8", None, "b4b6df8")
         repo.make_dirty()
-        assert repo.version() == "0+untagged.b4b6df8.dirty"
+        assert repo.version() == ("0+untagged.b4b6df8.dirty", None, "b4b6df8")
         repo.remove_git_dir()
-        assert repo.version() == "0+unknown.error"
+        assert repo.version() == ("0+unknown.error", ERR, "error")
 
 
 def test_tagged_version():
     with TempRepo("0.1") as repo:
-        assert repo.version() == "0.1"
+        assert repo.version() == ("0.1", None, "8923f27")
         repo.make_dirty()
-        assert repo.version() == "0.1+0.8923f27.dirty"
+        assert repo.version() == ("0.1+0.8923f27.dirty", None, "8923f27")
         repo.remove_git_dir()
-        assert repo.version() == "0+unknown.error"
+        assert repo.version() == ("0+unknown.error", ERR, "error")
 
 
 def test_post_tagged_version():
     with TempRepo("master") as repo:
         repo.checkout("b9222df")
-        assert repo.version() == "0.1+2.b9222df"
+        assert repo.version() == ("0.1+2.b9222df", None, "b9222df")
         repo.make_dirty()
-        assert repo.version() == "0.1+2.b9222df.dirty"
+        assert repo.version() == ("0.1+2.b9222df.dirty", None, "b9222df")
         repo.remove_git_dir()
-        assert repo.version() == "0+unknown.error"
+        assert repo.version() == ("0+unknown.error", ERR, "error")
 
 
 def test_archive_versions():
@@ -131,13 +134,22 @@ def test_archive_versions():
 
 
 @patch("versiongit._version_git.GIT_ARCHIVE_REF_NAMES", "tag: 0.1")
+@patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
 def test_mocked_ref_archive_versions(tmpdir):
-    assert versiongit._version_git.get_version_from_git(tmpdir) == "0.1"
+    assert versiongit._version_git.get_version_from_git(tmpdir) == (
+        "0.1",
+        None,
+        "1234567",
+    )
 
 
 @patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
 def test_mocked_hash_archive_versions(tmpdir):
-    assert versiongit._version_git.get_version_from_git(tmpdir) == "0+unknown.1234567"
+    assert versiongit._version_git.get_version_from_git(tmpdir) == (
+        "0+unknown.1234567",
+        None,
+        "1234567",
+    )
 
 
 def test_cmdclass_buildpy(tmpdir):
