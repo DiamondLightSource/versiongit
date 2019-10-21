@@ -30,12 +30,12 @@ Code Styling
 The code in this repository conforms to standards set by the following tools:
 
 - black_ for code formatting
-- isort_ for import ordering
 - flake8_ for style checks
+- `flake8-import-order`_ for import ordering
 
 .. _black: https://github.com/psf/black
-.. _isort: https://github.com/timothycrosley/isort
 .. _flake8: http://flake8.pycqa.org/en/latest/
+.. _flake8-import-order: https://github.com/PyCQA/flake8-import-order
 
 These tests will be run on code when running ``pipenv run tests`` and also
 automatically at check in. Please read the tool documentation for details
