@@ -1,6 +1,7 @@
 import sys
 import os
-from setuptools import setup
+import setuptools
+from distutils.core import setup
 
 # Place the directory containing _version_git on the path
 for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
