@@ -42,6 +42,18 @@ extensions = [
     'sphinx.ext.graphviz',
 ]
 
+# If true, Sphinx will warn about all references where the target cannot
+# be found.
+nitpicky = True
+
+# Don’t use a saved environment (the structure caching all cross-references),
+# but rebuild it completely.
+fresh_env = True
+
+# Turn warnings into errors. This means that the build stops at the first
+# warning and sphinx-build exits with exit status 1.
+warning_is_error = True
+
 # Both the class’ and the __init__ method’s docstring are concatenated and
 # inserted into the main body of the autoclass directive
 autoclass_content = "both"
