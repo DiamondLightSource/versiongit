@@ -9,3 +9,4 @@ rhel7_job:
     - pipenv run tests
     - pipenv run mypy
     - pipenv run docs
+    - python setup.py bdist_wheel
