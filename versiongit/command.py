@@ -3,7 +3,8 @@ import sys
 from argparse import ArgumentParser
 
 
-def maybe_warn_snippet(path: str, *snippets: str):
+def maybe_warn_snippet(path, *snippets):
+    # type: (str, str) -> None
     path = os.path.abspath(path)
     if os.path.exists(path):
         with open(path) as f:

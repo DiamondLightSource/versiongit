@@ -154,7 +154,9 @@ def test_mocked_hash_archive_versions(tmpdir):
 
 def test_cmdclass_buildpy(tmpdir):
     class BuildPy:
-        run = Mock(side_effect=lambda: tmpdir.mkdir("tst"))
+        def run(self):
+            tmpdir.mkdir("tst")
+            self.has_been_run = True
 
     cmdclass = get_cmdclass(build_py=BuildPy)
 
@@ -165,12 +167,14 @@ def test_cmdclass_buildpy(tmpdir):
     b_inst.run()
     expected = "__version__ = '%s'\n" % versiongit.__version__
     assert expected == tmpdir.join("tst", "_version_static.py").read()
-    BuildPy.run.assert_called_once()
+    assert b_inst.has_been_run
 
 
 def test_cmdclass_sdist(tmpdir):
     class Sdist:
-        make_release_tree = Mock(side_effect=lambda b, f: tmpdir.mkdir("tst"))
+        def make_release_tree(self, base_dir, files):
+            tmpdir.mkdir("tst")
+            self.run_with_args = (base_dir, files)
 
     cmdclass = get_cmdclass(sdist=Sdist)
 
@@ -180,7 +184,7 @@ def test_cmdclass_sdist(tmpdir):
     b_inst.make_release_tree(tmpdir, [])
     expected = "__version__ = '%s'\n" % versiongit.__version__
     assert expected == tmpdir.join("tst", "_version_static.py").read()
-    Sdist.make_release_tree.assert_called_once_with(tmpdir, [])
+    assert b_inst.run_with_args == (tmpdir, [])
 
 
 def test_no_command_args():

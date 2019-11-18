@@ -38,6 +38,8 @@ def get_version_from_git(path=None):
             else:
                 # No tag, just sha1
                 plus, sha1 = "untagged", output
+    # Replace dashes in tag for dots
+    tag = tag.replace("-", ".")
     if plus != "0" or dirty:
         # Not on a tag, add additional info
         tag = "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
@@ -61,13 +63,13 @@ def get_cmdclass(build_py=None, sdist=None):
 
     class BuildPy(build_py):
         def run(self):
-            super(BuildPy, self).run()
+            build_py.run(self)
             for pkg in self.packages:
                 make_version_static(self.build_lib, pkg)
 
     class Sdist(sdist):
         def make_release_tree(self, base_dir, files):
-            super(Sdist, self).make_release_tree(base_dir, files)
+            sdist.make_release_tree(self, base_dir, files)
             for pkg in self.distribution.packages:
                 make_version_static(base_dir, pkg)
 
