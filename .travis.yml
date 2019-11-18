@@ -1,0 +1,43 @@
+dist: xenial
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+# addons:
+#   apt:
+#     packages:
+#       - libhdf5-serial-dev
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
+    - ${VIRTUAL_ENV}/bin
+
+install:
+  - env
+  - pip install coveralls
+  - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
+  - ls -al ${VIRTUAL_ENV}/bin
+  - pip install wheel
+  - python setup.py bdist_wheel
+
+# command to run tests
+script:
+  - pipenv run tests
+  - pipenv run mypy
+  - pipenv run docs
+
+deploy:
+  provider: pypi
+  user: dls_controls
+  password:
+    secure: EqOTqQk0/1O/pVWHPx/UnkCCtb5aQDjhiVr1sH4+uPYQ9SpAPlQ7LeQjCa5VK6jyjB0pedJNeRw0JNmuwqekfoEKrZd+Iqb83zBQBIVodUWkm+9uMGVn2WE39V8Tt5PJV1akZ/M+TZhDjRuTT7i4gvAou4gQazCljLYr0MmbwVZ43e1+Ajlbtogh8D9fVYMCHz4/u6ppr0lf5jGHvgFxK6qfSTil+1SjH3PArs8ywXIH0FJq8gACOUpfxTTp78VXj0JkxU6r5rk4OMkmPYwjum037yrjRwFHDlHaG5UsTdwhKSK88w8FBydjL57bj3cXb1wq5Q1B3oUFEzMZXacRBVj7LpO7EOJhJidwzwomasZ/oSaH4hYz/qhYpnK2lvJJqAnu9MJh9w4fS4tX1bltz9w6FsAX+0DXUKoD98+X83g/RZQQ0HNzfKx6HEAG1PlW31B/PoVzoUwFtGPwhjH/6HWNdwZ8oj6ItRWEsFnx/FPFj7SJHyvagYN2JMw89KrwRU5u+s9nRi60f336aJOfgo13IZo/4oeKdMRW+Hg/kj8CrL3B7CNa/9/ZN19YMlE6x4hdFdPbZUIGwTpf8xm/jkLkZqMaHHDz7+6cyGM6a6d1uHbc87TIBHOBBrmWmgT42QIhdAPKet8hKlw5YcFN2NsThwcIld8wBwIUMzo6xRM=
+
+  on:
+    tags: true
+    # As we are doing a source dist, only deploy for one python
+    python: "3.7"
