@@ -58,6 +58,8 @@ def get_cmdclass(build_py=None, sdist=None):
         from setuptools.command.sdist import sdist
 
     def make_version_static(base_dir, pkg):
+        # Only place _version_static in the root directory of a module
+        pkg = pkg.split(".")[0]
         with open(os.path.join(base_dir, pkg, "_version_static.py"), "w") as f:
             f.write("__version__ = %r\n" % __version__)
 
