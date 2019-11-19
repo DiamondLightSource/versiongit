@@ -1,6 +1,6 @@
 import os
 import re
-from subprocess import check_output, CalledProcessError, PIPE
+from subprocess import check_output, CalledProcessError, STDOUT
 
 # These will be filled in if git archive is run
 GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
@@ -24,20 +24,20 @@ def get_version_from_git(path=None):
         git_cmd = "git -C %s describe --tags --dirty --always --long" % path
         # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         try:
-            output = check_output(git_cmd.split(), stderr=PIPE).decode().strip()
+            out = check_output(git_cmd.split(), stderr=STDOUT).decode().strip()
         except CalledProcessError as e:
-            error = e.stderr.decode().strip()
+            error = e.output.decode().strip()
         else:
-            if output.endswith("-dirty"):
-                output = output[:-6]
+            if out.endswith("-dirty"):
+                out = out[:-6]
                 dirty = ".dirty"
-            if "-" in output:
+            if "-" in out:
                 # There is a tag, extract it and the other pieces
-                match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", output)
+                match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", out)
                 tag, plus, sha1 = match.groups()
             else:
                 # No tag, just sha1
-                plus, sha1 = "untagged", output
+                plus, sha1 = "untagged", out
     # Replace dashes in tag for dots
     tag = tag.replace("-", ".")
     if plus != "0" or dirty:
