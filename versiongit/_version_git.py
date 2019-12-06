@@ -1,6 +1,6 @@
 import os
 import re
-from subprocess import check_output, CalledProcessError, STDOUT
+from subprocess import check_output, STDOUT
 
 # These will be filled in if git archive is run
 GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
@@ -25,8 +25,8 @@ def get_version_from_git(path=None):
         # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         try:
             out = check_output(git_cmd.split(), stderr=STDOUT).decode().strip()
-        except CalledProcessError as e:
-            error = e.output.decode().strip()
+        except Exception as e:
+            error = e
         else:
             if out.endswith("-dirty"):
                 out = out[:-6]
