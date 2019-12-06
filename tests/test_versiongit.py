@@ -161,7 +161,6 @@ def test_archive_versions():
         assert "0+unknown.b9222df" == archive.version()
 
 
-
 @patch("versiongit._version_git.GIT_ARCHIVE_REF_NAMES", "tag: 0.1")
 @patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
 def test_mocked_ref_archive_versions(tmpdir):
