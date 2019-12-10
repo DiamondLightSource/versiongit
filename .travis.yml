@@ -23,6 +23,7 @@ install:
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
   - pip install wheel
+  - pipenv install --dev
   - python setup.py bdist_wheel
 
 # command to run tests
