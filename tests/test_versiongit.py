@@ -93,20 +93,14 @@ def test_current_version_exists_and_is_str():
     assert isinstance(versiongit.__version__, str)
 
 
-class MockCalledProcessError:
-    def __init__(self, output):
-        self.output = output
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, CalledProcessError)
-            and other.output.decode().strip() == self.output
-        )
-
-
-NOT_A_REPO_ERR = MockCalledProcessError(
-    "fatal: Not a git repository (or any of the parent directories): .git"
-)
+def assert_records_git_error(version, error, sha1):
+    assert version == "0+unknown.error"
+    assert isinstance(error, CalledProcessError)
+    assert (
+        error.output.decode().strip()
+        == "fatal: Not a git repository (or any of the parent directories): .git"
+    )
+    assert sha1 == "error"
 
 
 def test_pre_tagged_version():
@@ -116,7 +110,7 @@ def test_pre_tagged_version():
         repo.make_dirty()
         assert ("0+untagged.b4b6df8.dirty", None, "b4b6df8") == repo.version()
         repo.remove_git_dir()
-        assert ("0+unknown.error", NOT_A_REPO_ERR, "error") == repo.version()
+        assert_records_git_error(*repo.version())
 
 
 def test_tagged_version():
@@ -125,7 +119,7 @@ def test_tagged_version():
         repo.make_dirty()
         assert ("0.1+0.8923f27.dirty", None, "8923f27") == repo.version()
         repo.remove_git_dir()
-        assert ("0+unknown.error", NOT_A_REPO_ERR, "error") == repo.version()
+        assert_records_git_error(*repo.version())
 
 
 def test_post_tagged_version():
@@ -135,7 +129,7 @@ def test_post_tagged_version():
         repo.make_dirty()
         assert ("0.1+2.b9222df.dirty", None, "b9222df") == repo.version()
         repo.remove_git_dir()
-        assert ("0+unknown.error", NOT_A_REPO_ERR, "error") == repo.version()
+        assert_records_git_error(*repo.version())
 
 
 def bad_git(cmd, **kwargs):
