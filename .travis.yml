@@ -22,8 +22,7 @@ install:
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
   - pip install wheel
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install .; fi
-  - pipenv install --dev
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install .; else pipenv install --dev; fi
   - python setup.py bdist_wheel
 
 # command to run tests
