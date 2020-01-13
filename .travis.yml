@@ -2,7 +2,6 @@ dist: xenial
 language: python
 python:
   - "2.7"
-  - "3.5"
   - "3.6"
   - "3.7"
 
@@ -23,13 +22,14 @@ install:
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
   - pip install wheel
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install --dev; fi
   - pipenv install --dev
   - python setup.py bdist_wheel
 
 # command to run tests
 script:
   - pipenv run tests
-  - pipenv run mypy
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv run mypy; fi
   - pipenv run docs
 
 deploy:
