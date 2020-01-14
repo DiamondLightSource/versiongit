@@ -9,7 +9,6 @@ pytest-cov = "*"
 pytest-black = "*"
 pytest-flake8 = "*"
 flake8-import-order = "*"
-mypy = "*"
 sphinx_rtd_theme = "*"
 
 [packages]
