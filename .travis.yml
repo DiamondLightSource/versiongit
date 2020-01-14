@@ -27,9 +27,9 @@ install:
 
 # command to run tests
 script:
-  - pipenv run tests
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python -m tests; else pipenv run tests; fi
   - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv run mypy; fi
-  - pipenv run docs
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python -m docs; else pipenv run docs; fi
 
 deploy:
   provider: pypi
