@@ -21,15 +21,14 @@ install:
   - pip install coveralls
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
-  - pip install wheel
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install .; else pipenv install --dev; fi
+  - pipenv install --dev
   - python setup.py bdist_wheel
 
 # command to run tests
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python -m tests; else pipenv run tests; fi
+  - pipenv run tests
+  - pipenv run docs
   - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv run mypy; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python -m docs; else pipenv run docs; fi
 
 deploy:
   provider: pypi
