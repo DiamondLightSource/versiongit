@@ -43,6 +43,7 @@ nosetests.xml
 coverage.xml
 *,cover
 *.mypy_cache
+*.pytest_cache
 
 # Translations
 *.mo
@@ -57,12 +58,13 @@ docs/_build/
 # PyBuilder
 target/
 
-# PyCharm and Eclipse project files
+# PyCharm and Eclipse and VSCode project files
 /.idea/
 /.project
 /.cproject
 /.settings/
 /.pydevproject
+/.vscode
 
 # DLS build dir and virtual environment
 /prefix/
