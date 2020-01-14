@@ -14,9 +14,6 @@ sphinx_rtd_theme = "*"
 
 [packages]
 
-[pipenv]
-allow_prereleases = true
-
 [scripts]
 # Put the coverage options here, not setup.cfg, so PyCharm coverage still works
 tests = "python -m pytest tests --cov=versiongit --cov-fail-under=90"
