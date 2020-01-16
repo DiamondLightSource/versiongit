@@ -50,8 +50,8 @@ Specifically, both are released under the Creative Commons
     :target: https://travis-ci.org/dls-controls/versiongit
     :alt: Build Status
 
-.. |coverage| image:: https://codecov.io/gh/dls-controls/versiongit/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/dls-controls/versiongit
+.. |coverage| .. image:: https://coveralls.io/repos/github/dls-controls/versiongit/badge.svg?branch=master
+    :target: https://coveralls.io/github/dls-controls/versiongit
     :alt: Test coverage
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/versiongit.svg
