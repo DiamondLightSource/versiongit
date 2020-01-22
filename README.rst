@@ -50,7 +50,7 @@ Specifically, both are released under the Creative Commons
     :target: https://travis-ci.org/dls-controls/versiongit
     :alt: Build Status
 
-.. |coverage| .. image:: https://coveralls.io/repos/github/dls-controls/versiongit/badge.svg?branch=master
+.. |coverage| image:: https://coveralls.io/repos/github/dls-controls/versiongit/badge.svg?branch=master
     :target: https://coveralls.io/github/dls-controls/versiongit
     :alt: Test coverage
 
