@@ -42,7 +42,7 @@ automatically at check in. Please read the tool documentation for details
 on how to fix the errors it reports.
 
 Documentation
-------------
+-------------
 
 Documentation is contained in the ``docs`` directory and extracted from
 docstrings of the API.
