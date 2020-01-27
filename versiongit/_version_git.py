@@ -39,6 +39,7 @@ def get_version_from_git(path=None):
                 # No tag, just sha1
                 plus, sha1 = "untagged", out
     # Replace dashes in tag for dots
+    # Remove this line when we stop supporting python 2.7
     tag = tag.replace("-", ".")
     if plus != "0" or dirty:
         # Not on a tag, add additional info

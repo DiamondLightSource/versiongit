@@ -105,8 +105,8 @@ def assert_records_git_error(version, error, sha1):
     assert version == "0+unknown.error"
     assert isinstance(error, CalledProcessError)
     assert (
-        error.output.decode().strip()
-        == "fatal: Not a git repository (or any of the parent directories): .git"
+        error.output.decode().strip().lower()
+        == "fatal: not a git repository (or any of the parent directories): .git"
     )
     assert sha1 == "error"
 

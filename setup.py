@@ -1,7 +1,7 @@
-import sys
 import os
-import setuptools
-from distutils.core import setup
+import sys
+
+from setuptools import setup
 
 # Place the directory containing _version_git on the path
 for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
@@ -9,7 +9,7 @@ for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
         sys.path.append(path)
         break
 
-from _version_git import get_cmdclass, __version__
+from _version_git import __version__, get_cmdclass  # noqa
 
 # Setup information is stored in setup.cfg but this function call
 # is still necessary.

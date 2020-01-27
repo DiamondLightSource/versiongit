@@ -1,10 +1,9 @@
-dist: xenial
 language: python
 python:
   - "2.7"
-  - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 # addons:
 #   apt:
@@ -19,18 +18,21 @@ cache:
 
 install:
   - env
-  - pip install coveralls
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
-  - pip install wheel
+  - pip install coveralls
   - pipenv install --dev
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv install mypy; fi
   - python setup.py bdist_wheel
 
 # command to run tests
 script:
   - pipenv run tests
-  - pipenv run mypy
   - pipenv run docs
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv run mypy; fi
+
+after_success:
+  - coveralls
 
 deploy:
   provider: pypi

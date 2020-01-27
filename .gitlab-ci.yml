@@ -1,12 +1,12 @@
 rhel7_job:
   tags:
     - rhel7
-  variables:
-    WORKON_HOME: /localhome/gitlab-runner/pipenv
   before_script:
     - pipenv install --dev
   script:
     - pipenv run tests
     - pipenv run mypy
     - pipenv run docs
+    - pipenv run coverage html
     - dls-python3 setup.py bdist_wheel
+    - dls-py3 check --no-tag-check

@@ -41,7 +41,7 @@ These tests will be run on code when running ``pipenv run tests`` and also
 automatically at check in. Please read the tool documentation for details
 on how to fix the errors it reports.
 
-Documenation
+Documentation
 ------------
 
 Documentation is contained in the ``docs`` directory and extracted from
