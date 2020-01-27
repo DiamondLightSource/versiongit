@@ -89,8 +89,16 @@ class TempArchive:
         pass
 
 
+def test_tmp_doesnt_have_a_dot_git_dir():
+    if os.path.exists("/tmp/.git"):
+        raise RuntimeError(
+            "/tmp/.git exists, quite a few of these tests will fail because of this"
+        )
+
+
 def test_current_version_exists_and_is_str():
-    assert isinstance(versiongit.__version__, str)
+    version = versiongit.__version__
+    assert str(version) == version
 
 
 def assert_records_git_error(version, error, sha1):
@@ -143,7 +151,7 @@ def test_no_git_errors():
         repo.checkout("b4b6df8")
         ver, err, md5 = repo.version()
         assert ver == "0+unknown.error"
-        assert "No such file or directory: 'bad_git'" in str(err)
+        assert "No such file or directory" in str(err)
         assert md5 == "error"
 
 
@@ -184,7 +192,7 @@ def test_cmdclass_buildpy(tmpdir):
 
     b_inst = cmdclass["build_py"]()
     b_inst.packages = ["tst"]
-    b_inst.build_lib = tmpdir
+    b_inst.build_lib = str(tmpdir)
 
     b_inst.run()
     expected = "__version__ = '%s'\n" % versiongit.__version__
@@ -203,7 +211,7 @@ def test_cmdclass_sdist(tmpdir):
     b_inst = cmdclass["sdist"]()
     b_inst.distribution = Mock(packages=["tst"])
 
-    b_inst.make_release_tree(tmpdir, [])
+    b_inst.make_release_tree(str(tmpdir), [])
     expected = "__version__ = '%s'\n" % versiongit.__version__
     assert expected == tmpdir.join("tst", "_version_static.py").read()
     assert b_inst.run_with_args == (tmpdir, [])
