@@ -195,7 +195,7 @@ def test_cmdclass_buildpy(tmpdir):
     b_inst.build_lib = str(tmpdir)
 
     b_inst.run()
-    expected = "__version__ = '%s'\n" % versiongit.__version__
+    expected = "__version__ = %r\n" % versiongit.__version__
     assert expected == tmpdir.join("tst", "_version_static.py").read()
     assert b_inst.has_been_run
 
@@ -212,7 +212,7 @@ def test_cmdclass_sdist(tmpdir):
     b_inst.distribution = Mock(packages=["tst"])
 
     b_inst.make_release_tree(str(tmpdir), [])
-    expected = "__version__ = '%s'\n" % versiongit.__version__
+    expected = "__version__ = %r\n" % versiongit.__version__
     assert expected == tmpdir.join("tst", "_version_static.py").read()
     assert b_inst.run_with_args == (tmpdir, [])
 
