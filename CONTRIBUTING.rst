@@ -32,14 +32,21 @@ The code in this repository conforms to standards set by the following tools:
 - black_ for code formatting
 - flake8_ for style checks
 - `flake8-import-order`_ for import ordering
+- mypy_ for static type checking (for Python3.6+)
 
 .. _black: https://github.com/psf/black
 .. _flake8: http://flake8.pycqa.org/en/latest/
 .. _flake8-import-order: https://github.com/PyCQA/flake8-import-order
+.. _mypy: https://github.com/python/mypy
 
 These tests will be run on code when running ``pipenv run tests`` and also
 automatically at check in. Please read the tool documentation for details
 on how to fix the errors it reports.
+
+.. note::
+    You may wish to exclude flake8-import-order from the list of checks.
+    Remove it from the list of dev-packages in the Pipfile and delete the
+    'import-order-style' line from the flake8 section in setup.cfg.
 
 Documentation
 -------------
