@@ -22,14 +22,12 @@ install:
   - ls -al ${VIRTUAL_ENV}/bin
   - pip install coveralls
   - pipenv install --dev
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv install mypy; fi
   - python setup.py bdist_wheel
 
 # command to run tests
 script:
   - pipenv run tests
   - pipenv run docs
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.7 ]]; then pipenv run mypy; fi
 
 after_script:
   - coveralls
