@@ -7,8 +7,10 @@ verify_ssl = true
 mock = "*"
 pytest-cov = "*"
 pytest-mypy = "*"
+mypy = "*"
 pytest-flake8 = "*"
 flake8-black = "*"
+black = "*"
 flake8-isort = "*"
 sphinx_rtd_theme = "*"
 
