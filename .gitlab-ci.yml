@@ -7,6 +7,5 @@ rhel7_job:
     - pipenv run tests
     - pipenv run mypy
     - pipenv run docs
-    - pipenv run coverage html
     - dls-python3 setup.py bdist_wheel
     - dls-py3 check --no-tag-check

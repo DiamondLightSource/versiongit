@@ -6,14 +6,15 @@ verify_ssl = true
 [dev-packages]
 mock = "*"
 pytest-cov = "*"
-pytest-black = "*"
+pytest-mypy = "*"
 pytest-flake8 = "*"
-flake8-import-order = "*"
+flake8-black = "*"
+flake8-isort = "*"
 sphinx_rtd_theme = "*"
 
 [packages]
 
 [scripts]
 # Put the coverage options here, not setup.cfg, so PyCharm coverage still works
-tests = "python -m pytest tests --cov=versiongit --cov-fail-under=90 --cov-report html"
+tests = "python -m pytest tests --cov=versiongit --cov-report html"
 docs = "sphinx-build -b html docs build/html"
