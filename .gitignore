@@ -65,6 +65,7 @@ target/
 /.settings/
 /.pydevproject
 /.vscode
+/.history
 
 # DLS build dir and virtual environment
 /prefix/
