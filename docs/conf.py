@@ -11,16 +11,18 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(__file__, '..', '..')))
 
-import versiongit
+
+sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..")))
+
+import versiongit  # noqa
 
 # -- General configuration ------------------------------------------------
 
 # General information about the project.
-project = 'versiongit'
-copyright = '2019, Diamond Light Source'
-author = 'Tom Cobb'
+project = "versiongit"
+copyright = "2019, Diamond Light Source"
+author = "Tom Cobb"
 
 # The short X.Y version.
 version = versiongit.__version__.split("+")[0]
@@ -29,17 +31,17 @@ release = versiongit.__version__
 
 extensions = [
     # Use this for generating API docs
-    'sphinx.ext.autodoc',
+    "sphinx.ext.autodoc",
     # This can parse google style docstrings
-    'sphinx.ext.napoleon',
+    "sphinx.ext.napoleon",
     # For linking to external sphinx documentation
-    'sphinx.ext.intersphinx',
+    "sphinx.ext.intersphinx",
     # Add links to source code in API docs
-    'sphinx.ext.viewcode',
+    "sphinx.ext.viewcode",
     # Adds the inheritance-diagram generation directive
-    'sphinx.ext.inheritance_diagram',
+    "sphinx.ext.inheritance_diagram",
     # Adds embedded graphviz support
-    'sphinx.ext.graphviz',
+    "sphinx.ext.graphviz",
 ]
 
 # If true, Sphinx will warn about all references where the target cannot
@@ -59,7 +61,7 @@ warning_is_error = True
 autoclass_content = "both"
 
 # Order the members by the order they appear in the source code
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
 
 # Output graphviz directive produced images in a scalable format
 graphviz_output_format = "svg"
@@ -69,25 +71,23 @@ graphviz_output_format = "svg"
 default_role = "any"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'contents'
+master_doc = "contents"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # These patterns also affect html_static_path and html_extra_path
-exclude_patterns = ['_build']
+exclude_patterns = ["_build"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
-intersphinx_mapping = dict(
-    python=('https://docs.python.org/3/', None),
-)
+intersphinx_mapping = dict(python=("https://docs.python.org/3/", None))
 
 # A dictionary of graphviz graph attributes for inheritance diagrams.
 inheritance_graph_attrs = dict(rankdir="TB")
@@ -108,7 +108,7 @@ html_theme = "sphinx_rtd_theme"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False

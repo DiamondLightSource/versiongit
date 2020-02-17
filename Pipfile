@@ -14,8 +14,8 @@ sphinx_rtd_theme = "*"
 [packages]
 
 [scripts]
-# Put the coverage options here, not setup.cfg, so PyCharm coverage still works
-tests = "python -m pytest tests --cov=versiongit --cov-report html"
+# Put the coverage options here, not setup.cfg, so IDE coverage still works
+tests = "python -m pytest --cov=versiongit --cov-report html"
 docs = "sphinx-build -b html docs build/html"
 
 [pipenv]
