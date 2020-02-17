@@ -5,26 +5,14 @@ python:
   - "3.7"
   - "3.8"
 
-# addons:
-#   apt:
-#     packages:
-#       - libhdf5-serial-dev
-
-cache:
-  directories:
-    - $HOME/.cache/pip
-    - ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
-    - ${VIRTUAL_ENV}/bin
-
 install:
   - env
-  - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
-  - ls -al ${VIRTUAL_ENV}/bin
   - pip install coveralls
   - pipenv install --dev
+  - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
+  - ls -al ${VIRTUAL_ENV}/bin
   - python setup.py bdist_wheel
 
-# command to run tests
 script:
   - pipenv run tests
   - pipenv run docs
