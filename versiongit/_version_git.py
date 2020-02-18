@@ -1,6 +1,6 @@
 import os
 import re
-from subprocess import check_output, STDOUT
+from subprocess import STDOUT, check_output
 
 # These will be filled in if git archive is run
 GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
@@ -47,13 +47,7 @@ def get_version_from_git(path=None):
     return tag, error, sha1
 
 
-try:
-    # When installing from sdist there will already be a _version_static.py
-    # and during setup it will be on the python path (see setup.py: os.walk)
-    from _version_static import __version__  # type: ignore
-except ImportError:
-    # Otherwise get the release number from git describe
-    __version__, git_error, git_sha1 = get_version_from_git()
+__version__, git_error, git_sha1 = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):
@@ -65,14 +59,10 @@ def get_cmdclass(build_py=None, sdist=None):
         from setuptools.command.sdist import sdist
 
     def make_version_static(base_dir, pkg):
-        # Only place _version_static in the root directory of a module
-        pkg = pkg.split(".")[0]
-        with open(os.path.join(base_dir, pkg, "_version_static.py"), "w") as f:
-            f.write("__version__ = %r\n" % __version__)
-        static_version = os.path.join(base_dir, pkg, "_version_static.py")
+        vs = os.path.join(base_dir, pkg.split(".")[0], "_version_static.py")
         # when installing from sdist the _version_static.py will already exist
-        if not os.path.exists(static_version):
-            with open(static_version, "w") as f:
+        if not os.path.exists(vs):
+            with open(vs, "w") as f:
                 f.write("__version__ = %r\n" % __version__)
 
     class BuildPy(build_py):

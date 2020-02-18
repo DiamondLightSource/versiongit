@@ -73,10 +73,10 @@ def main():
             os.path.join(args.dir, "__init__.py"),
             """try:
     # In a release there will be a static version file written by setup.py
-    from ._version_static import __version__  # type: ignore
+    from ._version_static import __version__  # noqa
 except ImportError:
     # Otherwise get the release number from git describe
-    from ._version_git import __version__"""
+    from ._version_git import __version__""",
         )
         # Make sure .gitattribute lines are in
         maybe_warn_snippet(
