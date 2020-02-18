@@ -163,8 +163,8 @@ def test_archive_versions():
         assert "0+unknown.b9222df" == archive.version()
 
 
-@patch("versiongit._version_git.GIT_ARCHIVE_REF_NAMES", "tag: 0.1")
-@patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
+@patch("versiongit._version_git.GIT_REFS", "tag: 0.1")
+@patch("versiongit._version_git.GIT_SHA1", "1234567")
 def test_mocked_ref_archive_versions(tmpdir):
     assert versiongit._version_git.get_version_from_git(tmpdir) == (
         "0.1",
@@ -173,7 +173,7 @@ def test_mocked_ref_archive_versions(tmpdir):
     )
 
 
-@patch("versiongit._version_git.GIT_ARCHIVE_HASH", "1234567")
+@patch("versiongit._version_git.GIT_SHA1", "1234567")
 def test_mocked_hash_archive_versions(tmpdir):
     assert versiongit._version_git.get_version_from_git(tmpdir) == (
         "0+unknown.1234567",
@@ -186,7 +186,7 @@ def test_cmdclass_buildpy(tmpdir):
     class BuildPy:
         def run(self):
             with open(str(tmpdir.mkdir("tst") / "_version_git.py"), "w") as f:
-                f.write("\nVERSION_STATIC = None\n")
+                f.write("GIT_SHA1 = anything\nGIT_REFS = anything\n")
             self.has_been_run = True
 
     cmdclass = get_cmdclass(build_py=BuildPy)
@@ -196,8 +196,11 @@ def test_cmdclass_buildpy(tmpdir):
     b_inst.build_lib = str(tmpdir)
 
     b_inst.run()
-    expected = "VERSION_STATIC = %r\n" % versiongit.__version__
-    assert expected in tmpdir.join("tst", "_version_git.py").read()
+    expected = "GIT_SHA1 = %r\nGIT_REFS = 'tag: %s'\n" % (
+        versiongit._version_git.git_sha1,
+        versiongit.__version__,
+    )
+    assert expected == tmpdir.join("tst", "_version_git.py").read()
     assert b_inst.has_been_run
 
 
@@ -205,7 +208,7 @@ def test_cmdclass_sdist(tmpdir):
     class Sdist:
         def make_release_tree(self, base_dir, files):
             with open(str(tmpdir.mkdir("tst") / "_version_git.py"), "w") as f:
-                f.write("\nVERSION_STATIC = None\n")
+                f.write("blah\nGIT_SHA1 = anything\nGIT_REFS = anything\n")
             self.run_with_args = (base_dir, files)
 
     cmdclass = get_cmdclass(sdist=Sdist)
@@ -214,8 +217,11 @@ def test_cmdclass_sdist(tmpdir):
     b_inst.distribution = Mock(packages=["tst"])
 
     b_inst.make_release_tree(str(tmpdir), [])
-    expected = "VERSION_STATIC = %r\n" % versiongit.__version__
-    assert expected in tmpdir.join("tst", "_version_git.py").read()
+    expected = "blah\nGIT_SHA1 = %r\nGIT_REFS = 'tag: %s'\n" % (
+        versiongit._version_git.git_sha1,
+        versiongit.__version__,
+    )
+    assert expected == tmpdir.join("tst", "_version_git.py").read()
     assert b_inst.run_with_args == (tmpdir, [])
 
 
@@ -239,6 +245,7 @@ def test_command_add_blank(capsys, tmpdir):
         main()
     lines = tmpdir.join("pkg", "_version_git.py").read().splitlines()
     assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
+    assert lines[10] == 'GIT_SHA1 = "$Format:%h$"'
     out, err = capsys.readouterr()
     assert not err
     assert (

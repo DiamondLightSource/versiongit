@@ -2,28 +2,25 @@ import os
 import re
 from subprocess import STDOUT, check_output
 
-# These will be filled in if git archive is run
-GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
-GIT_ARCHIVE_HASH = "$Format:%h$"
-
-# This will be filled in by cmdclasses passed to setup.py
-VERSION_STATIC = None
+# These will be filled in if git archive is run or by setup.py cmdclasses
+GIT_REFS = "$Format:%D$"
+GIT_SHA1 = "$Format:%h$"
 
 
 def get_version_from_git(path=None):
     """Try to parse version from git describe, fallback to git archive tags"""
-    if path is None:
-        # If no path to git repo, choose the directory this file is in
-        path = os.path.dirname(os.path.abspath(__file__))
     tag, plus, sha1, dirty, error = "0", "unknown", "error", "", None
-    if not GIT_ARCHIVE_HASH.startswith("$"):
-        # git archive has written a sha1 for us to use
-        sha1 = GIT_ARCHIVE_HASH
-        for ref_name in GIT_ARCHIVE_REF_NAMES.split(", "):
+    if not GIT_SHA1.startswith("$"):
+        # git archive or the cmdclasses below have filled in these strings
+        sha1 = GIT_SHA1
+        for ref_name in GIT_REFS.split(", "):
             if ref_name.startswith("tag: "):
                 # On a git archive tag
                 tag, plus = ref_name[5:], "0"
     else:
+        if path is None:
+            # If no path to git repo, choose the directory this file is in
+            path = os.path.dirname(os.path.abspath(__file__))
         git_cmd = "git -C %s describe --tags --dirty --always --long" % path
         # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         try:
@@ -50,10 +47,7 @@ def get_version_from_git(path=None):
     return tag, error, sha1
 
 
-if VERSION_STATIC:
-    __version__, git_error, git_sha1 = VERSION_STATIC, None, None
-else:
-    __version__, git_error, git_sha1 = get_version_from_git()
+__version__, git_error, git_sha1 = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):
@@ -66,14 +60,17 @@ def get_cmdclass(build_py=None, sdist=None):
 
     def make_version_static(base_dir, pkg):
         vg = os.path.join(base_dir, pkg.split(".")[0], "_version_git.py")
-        # Replace VERSION_STATIC in _version_git.py
         if os.path.isfile(vg):
-            text = open(vg).read()
-            open(vg, "w").write(
-                text.replace(
-                    "\nVERSION_STATIC = None", "\nVERSION_STATIC = %r" % __version__
-                )
-            )
+            lines = open(vg).readlines()
+            with open(vg, "w") as f:
+                for line in lines:
+                    # Replace GIT_* with static versions
+                    if line.startswith("GIT_SHA1 = "):
+                        f.write("GIT_SHA1 = '%s'\n" % git_sha1)
+                    elif line.startswith("GIT_REFS = "):
+                        f.write("GIT_REFS = 'tag: %s'\n" % __version__)
+                    else:
+                        f.write(line)
 
     class BuildPy(build_py):
         def run(self):

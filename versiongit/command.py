@@ -53,19 +53,14 @@ def main():
 """
             % __version__
         )
-        # Make sure when running from git archive, the format strings are put
-        # back in
+        # Make sure when running from git archive or a released version,
+        # the format strings are put back in
         for i, line in enumerate(lines):
             split = line.split(" = ")
-            if split[0] == "GIT_ARCHIVE_REF_NAMES":
-                split[1] = '"$Format:%D$"\n'
-            elif split[0] == "GIT_ARCHIVE_HASH":
-                split[1] = '"$Format:%h$"\n'
-            elif split[0] == "VERSION_STATIC":
-                split[1] = "None"
-            else:
-                continue
-            lines[i] = " = ".join(split)
+            if split[0] == "GIT_REFS":
+                lines[i] = split[0] + ' = "$Format:%D$"\n'
+            elif split[0] == "GIT_SHA1":
+                lines[i] = split[0] + ' = "$Format:%h$"\n'
         with open(os.path.join(args.dir, "_version_git.py"), "w") as f:
             f.write(header)
             f.writelines(lines)
@@ -98,6 +93,7 @@ from _version_git import __version__, get_cmdclass  # noqa
         )
 
 
+# So we can run the file directly for testing
 if __name__ == "__main__":
     sys.path.insert(1, os.path.join(os.path.dirname(__file__), ".."))
     main()
