@@ -14,8 +14,8 @@ sphinx_rtd_theme = "*"
 [packages]
 
 [scripts]
-# Put coverage threshold here so we don't fail IDE tests
-tests = "python -m pytest --cov-fail-under=90"
+# Put coverage here so we don't interfere with debugging in the IDE
+tests = "python -m pytest --cov-fail-under=90 --cov=versiongit --cov-report xml:cov.xml"
 docs = "sphinx-build -b html docs build/html"
 
 [pipenv]
