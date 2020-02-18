@@ -6,6 +6,9 @@ from subprocess import STDOUT, check_output
 GIT_ARCHIVE_REF_NAMES = "$Format:%D$"
 GIT_ARCHIVE_HASH = "$Format:%h$"
 
+# This will be filled in by cmdclasses passed to setup.py
+VERSION_STATIC = None
+
 
 def get_version_from_git(path=None):
     """Try to parse version from git describe, fallback to git archive tags"""
@@ -47,7 +50,10 @@ def get_version_from_git(path=None):
     return tag, error, sha1
 
 
-__version__, git_error, git_sha1 = get_version_from_git()
+if VERSION_STATIC:
+    __version__, git_error, git_sha1 = VERSION_STATIC, None, None
+else:
+    __version__, git_error, git_sha1 = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):
@@ -59,11 +65,15 @@ def get_cmdclass(build_py=None, sdist=None):
         from setuptools.command.sdist import sdist
 
     def make_version_static(base_dir, pkg):
-        vs = os.path.join(base_dir, pkg.split(".")[0], "_version_static.py")
-        # when installing from sdist the _version_static.py will already exist
-        if not os.path.exists(vs):
-            with open(vs, "w") as f:
-                f.write("__version__ = %r\n" % __version__)
+        vg = os.path.join(base_dir, pkg.split(".")[0], "_version_git.py")
+        # Replace VERSION_STATIC in _version_git.py
+        if os.path.isfile(vg):
+            text = open(vg).read()
+            open(vg, "w").write(
+                text.replace(
+                    "\nVERSION_STATIC = None", "\nVERSION_STATIC = %r" % __version__
+                )
+            )
 
     class BuildPy(build_py):
         def run(self):

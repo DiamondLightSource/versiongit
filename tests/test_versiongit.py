@@ -185,7 +185,8 @@ def test_mocked_hash_archive_versions(tmpdir):
 def test_cmdclass_buildpy(tmpdir):
     class BuildPy:
         def run(self):
-            tmpdir.mkdir("tst")
+            with open(tmpdir.mkdir("tst") / "_version_git.py", "w") as f:
+                f.write("\nVERSION_STATIC = None\n")
             self.has_been_run = True
 
     cmdclass = get_cmdclass(build_py=BuildPy)
@@ -195,15 +196,16 @@ def test_cmdclass_buildpy(tmpdir):
     b_inst.build_lib = str(tmpdir)
 
     b_inst.run()
-    expected = "__version__ = %r\n" % versiongit.__version__
-    assert expected == tmpdir.join("tst", "_version_static.py").read()
+    expected = "VERSION_STATIC = %r\n" % versiongit.__version__
+    assert expected in tmpdir.join("tst", "_version_git.py").read()
     assert b_inst.has_been_run
 
 
 def test_cmdclass_sdist(tmpdir):
     class Sdist:
         def make_release_tree(self, base_dir, files):
-            tmpdir.mkdir("tst")
+            with open(tmpdir.mkdir("tst") / "_version_git.py", "w") as f:
+                f.write("\nVERSION_STATIC = None\n")
             self.run_with_args = (base_dir, files)
 
     cmdclass = get_cmdclass(sdist=Sdist)
@@ -212,8 +214,8 @@ def test_cmdclass_sdist(tmpdir):
     b_inst.distribution = Mock(packages=["tst"])
 
     b_inst.make_release_tree(str(tmpdir), [])
-    expected = "__version__ = %r\n" % versiongit.__version__
-    assert expected == tmpdir.join("tst", "_version_static.py").read()
+    expected = "VERSION_STATIC = %r\n" % versiongit.__version__
+    assert expected in tmpdir.join("tst", "_version_git.py").read()
     assert b_inst.run_with_args == (tmpdir, [])
 
 
@@ -245,12 +247,7 @@ def test_command_add_blank(capsys, tmpdir):
 
 Please add the following snippet to %(d)s/pkg/__init__.py:
 --------------------------------------------------------------------------------
-try:
-    # In a release there will be a static version file written by setup.py
-    from ._version_static import __version__  # noqa
-except ImportError:
-    # Otherwise get the release number from git describe
-    from ._version_git import __version__
+from ._version_git import __version__
 --------------------------------------------------------------------------------
 
 Please add the following snippet to %(d)s/.gitattributes:
@@ -289,12 +286,7 @@ Something that will be overwritten
     pkg_dir.join("__init__.py").write(
         """
 # This is a file we wrote
-try:
-    # In a release there will be a static version file written by setup.py
-    from ._version_static import __version__  # noqa
-except ImportError:
-    # Otherwise get the release number from git describe
-    from ._version_git import __version__
+from ._version_git import __version__
 from blah import stuff
 """
     )
