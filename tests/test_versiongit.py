@@ -66,13 +66,10 @@ class TempArchive:
             lines = f.readlines()
         for i, line in enumerate(lines):
             split = line.split(" = ")
-            if split[0] == "GIT_ARCHIVE_REF_NAMES":
-                split[1] = "'%s'\n" % ref_names
-            elif split[0] == "GIT_ARCHIVE_HASH":
-                split[1] = "'%s'\n" % sha1
-            else:
-                continue
-            lines[i] = " = ".join(split)
+            if split[0] == "GIT_REFS":
+                lines[i] = split[0] + ' = "$Format:%D$"\n'
+            elif split[0] == "GIT_SHA1":
+                lines[i] = split[0] + ' = "$Format:%h$"\n'
         with open(path, "w") as f:
             f.writelines(lines)
 
@@ -196,7 +193,7 @@ def test_cmdclass_buildpy(tmpdir):
     b_inst.build_lib = str(tmpdir)
 
     b_inst.run()
-    expected = "GIT_SHA1 = %r\nGIT_REFS = 'tag: %s'\n" % (
+    expected = "GIT_SHA1 = '%s'\nGIT_REFS = 'tag: %s'\n" % (
         versiongit._version_git.git_sha1,
         versiongit.__version__,
     )
@@ -217,7 +214,7 @@ def test_cmdclass_sdist(tmpdir):
     b_inst.distribution = Mock(packages=["tst"])
 
     b_inst.make_release_tree(str(tmpdir), [])
-    expected = "blah\nGIT_SHA1 = %r\nGIT_REFS = 'tag: %s'\n" % (
+    expected = "blah\nGIT_SHA1 = '%s'\nGIT_REFS = 'tag: %s'\n" % (
         versiongit._version_git.git_sha1,
         versiongit.__version__,
     )
