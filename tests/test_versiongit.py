@@ -185,7 +185,7 @@ def test_mocked_hash_archive_versions(tmpdir):
 def test_cmdclass_buildpy(tmpdir):
     class BuildPy:
         def run(self):
-            with open(tmpdir.mkdir("tst") / "_version_git.py", "w") as f:
+            with open(str(tmpdir.mkdir("tst") / "_version_git.py"), "w") as f:
                 f.write("\nVERSION_STATIC = None\n")
             self.has_been_run = True
 
@@ -204,7 +204,7 @@ def test_cmdclass_buildpy(tmpdir):
 def test_cmdclass_sdist(tmpdir):
     class Sdist:
         def make_release_tree(self, base_dir, files):
-            with open(tmpdir.mkdir("tst") / "_version_git.py", "w") as f:
+            with open(str(tmpdir.mkdir("tst") / "_version_git.py"), "w") as f:
                 f.write("\nVERSION_STATIC = None\n")
             self.run_with_args = (base_dir, files)
 
