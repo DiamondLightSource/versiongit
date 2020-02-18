@@ -61,6 +61,8 @@ def main():
                 split[1] = '"$Format:%D$"\n'
             elif split[0] == "GIT_ARCHIVE_HASH":
                 split[1] = '"$Format:%h$"\n'
+            elif split[0] == "VERSION_STATIC":
+                split[1] = "None"
             else:
                 continue
             lines[i] = " = ".join(split)
