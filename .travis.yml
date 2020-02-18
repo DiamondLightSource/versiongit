@@ -19,3 +19,12 @@ script:
 
 after_script:
   - coveralls
+
+deploy:
+  provider: pypi
+  username: dls_controls
+  password: UJphQ6nBC8SNgguWMDuIaXHnVyE9tDiscg3Gls/ZxZlZjAddCeZNX/KLZvLkS/mTaptWkqavASyHlGYFcfGBqC9A3a9y++95o/nzBAqhHUOGzxHqVshckLhWJh8u9EZU7DwdUe6gGFnk17iGk/4V1itc5i27XcLcTNUEtgG+kKkg7RC8hNqPdpOPcHqacnk8cR3tYj6/zt3uKdm9EoNrUGIbo10GJsH4aEuSGhutdhudDqQ1GNFIwmHHC4lwdzPGBSVQ8d8vKQWjoddS1i3uJchADkZJ466sW//pC9Y3UB2x4au+XNXgO9Z04uwn/OcqVuYTT6bYqKghsFzX9XHNDHepjUNAxZWtSQ8X3aq5kfPgnFnHb5JqxBi72jLJeNavYpk9W5JFB8rkuUQJRhG65Xlnbl8zeez5blhL2JXRWiifD7vXufaaRk4rk/fgaHsJSIY/W9vrcnBtdyfdpMcN+9cCMD6H9Lsf8vIZ5rh5tUsVszv5uG2UpwO8TPpRvNKcOvpNJLEcJAyEFm6eLI3TDOLH5o1c+kQlAobacMixh7sknzyanjhVrJcwrmUJ6zwsVoMETe7Yjf3z3lxR2PenQu++bRUXuZkQrSGAcAnRFL+tz2KZJVX+aYXKjO/8O5R9J0Z8EyqQMVtA2c8l+ilsDFOoYSLZWcZ/1tN+X7arNHI=
+  skip_existing: true
+  on:
+    tags: true
+  edge: true  # opt in to dpl v2
