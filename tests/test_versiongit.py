@@ -67,9 +67,9 @@ class TempArchive:
         for i, line in enumerate(lines):
             split = line.split(" = ")
             if split[0] == "GIT_REFS":
-                lines[i] = split[0] + ' = "$Format:%D$"\n'
+                lines[i] = '%s = "%s"\n' % (split[0], ref_names)
             elif split[0] == "GIT_SHA1":
-                lines[i] = split[0] + ' = "$Format:%h$"\n'
+                lines[i] = '%s = "%s"\n' % (split[0], sha1)
         with open(path, "w") as f:
             f.writelines(lines)
 
