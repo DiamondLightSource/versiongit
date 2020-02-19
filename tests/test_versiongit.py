@@ -96,31 +96,31 @@ def test_current_version_exists_and_is_str():
     assert str(version) == version
 
 
-def assert_records_git_error(version, error, sha1):
-    assert version == "0+unknown.error"
+def assert_records_git_error(version, sha1, error):
+    assert version == "0+unknown"
     assert isinstance(error, CalledProcessError)
     assert (
         error.output.decode().strip().lower()
         == "fatal: not a git repository (or any of the parent directories): .git"
     )
-    assert sha1 == "error"
+    assert sha1 is None
 
 
 def test_pre_tagged_version():
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
-        assert ("0+untagged.b4b6df8", None, "b4b6df8") == repo.version()
+        assert ("0+untagged.gb4b6df8", "b4b6df8", None) == repo.version()
         repo.make_dirty()
-        assert ("0+untagged.b4b6df8.dirty", None, "b4b6df8") == repo.version()
+        assert ("0+untagged.gb4b6df8.dirty", "b4b6df8", None) == repo.version()
         repo.remove_git_dir()
         assert_records_git_error(*repo.version())
 
 
 def test_tagged_version():
     with TempRepo("0.1") as repo:
-        assert ("0.1", None, "8923f27") == repo.version()
+        assert ("0.1", "8923f27", None) == repo.version()
         repo.make_dirty()
-        assert ("0.1+0.8923f27.dirty", None, "8923f27") == repo.version()
+        assert ("0.1+0.g8923f27.dirty", "8923f27", None) == repo.version()
         repo.remove_git_dir()
         assert_records_git_error(*repo.version())
 
@@ -128,9 +128,9 @@ def test_tagged_version():
 def test_post_tagged_version():
     with TempRepo("master") as repo:
         repo.checkout("b9222df")
-        assert ("0.1+2.b9222df", None, "b9222df") == repo.version()
+        assert ("0.1+2.gb9222df", "b9222df", None) == repo.version()
         repo.make_dirty()
-        assert ("0.1+2.b9222df.dirty", None, "b9222df") == repo.version()
+        assert ("0.1+2.gb9222df.dirty", "b9222df", None) == repo.version()
         repo.remove_git_dir()
         assert_records_git_error(*repo.version())
 
@@ -144,10 +144,10 @@ def bad_git(cmd, **kwargs):
 def test_no_git_errors():
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
-        ver, err, md5 = repo.version()
-        assert ver == "0+unknown.error"
+        ver, sha1, err = repo.version()
+        assert ver == "0+unknown"
         assert "No such file or directory" in str(err)
-        assert md5 == "error"
+        assert sha1 is None
 
 
 def test_archive_versions():
@@ -155,7 +155,7 @@ def test_archive_versions():
         archive.change_version("8923f27", "HEAD -> master, tag: 0.1")
         assert "0.1" == archive.version()
         archive.change_version("b9222df")
-        assert "0+unknown.b9222df" == archive.version()
+        assert "0+untagged.b9222df" == archive.version()
 
 
 @patch("versiongit._version_git.GIT_REFS", "tag: 0.1")
@@ -163,17 +163,17 @@ def test_archive_versions():
 def test_mocked_ref_archive_versions(tmpdir):
     assert versiongit._version_git.get_version_from_git(tmpdir) == (
         "0.1",
-        None,
         "1234567",
+        None,
     )
 
 
 @patch("versiongit._version_git.GIT_SHA1", "1234567")
 def test_mocked_hash_archive_versions(tmpdir):
     assert versiongit._version_git.get_version_from_git(tmpdir) == (
-        "0+unknown.1234567",
-        None,
+        "0+untagged.g1234567",
         "1234567",
+        None,
     )
 
 

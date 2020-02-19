@@ -9,13 +9,13 @@ GIT_SHA1 = "$Format:%h$"
 
 def get_version_from_git(path=None):
     """Try to parse version from git describe, fallback to git archive tags"""
-    tag, plus, sha1, dirty, error = "0", "unknown", "error", "", None
+    tag, plus, suffix = "0", "untagged", ""
     if not GIT_SHA1.startswith("$"):
         # git archive or the cmdclasses below have filled in these strings
         sha1 = GIT_SHA1
         for ref_name in GIT_REFS.split(", "):
             if ref_name.startswith("tag: "):
-                # On a git archive tag
+                # git from 1.8.3 onwards labels archive tags "tag: TAGNAME"
                 tag, plus = ref_name[5:], "0"
     else:
         if path is None:
@@ -26,28 +26,28 @@ def get_version_from_git(path=None):
         try:
             out = check_output(git_cmd.split(), stderr=STDOUT).decode().strip()
         except Exception as e:
-            error = e
+            return "0+unknown", None, e
         else:
             if out.endswith("-dirty"):
                 out = out[:-6]
-                dirty = ".dirty"
+                suffix = ".dirty"
             if "-" in out:
                 # There is a tag, extract it and the other pieces
                 match = re.search(r"^(.+)-(\d+)-g([0-9a-f]+)$", out)
                 tag, plus, sha1 = match.groups()
             else:
                 # No tag, just sha1
-                plus, sha1 = "untagged", out
+                sha1 = out
     # Replace dashes in tag for dots
     # Remove this line when we stop supporting python 2.7
     tag = tag.replace("-", ".")
-    if plus != "0" or dirty:
+    if plus != "0" or suffix:
         # Not on a tag, add additional info
-        tag = "%(tag)s+%(plus)s.%(sha1)s%(dirty)s" % locals()
-    return tag, error, sha1
+        tag = "%(tag)s+%(plus)s.g%(sha1)s%(suffix)s" % locals()
+    return tag, sha1, None
 
 
-__version__, git_error, git_sha1 = get_version_from_git()
+__version__, git_sha1, git_error = get_version_from_git()
 
 
 def get_cmdclass(build_py=None, sdist=None):

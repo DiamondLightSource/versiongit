@@ -99,5 +99,23 @@ This will create ``repo/modulename/_version_git.py`` and tell you what to put in
 ``repo/setup.py``, ``repo/modulename/__init__.py`` and ``repo/.gitattributes``
 to make it work
 
+
+Version Numbers
+---------------
+
+Version numbers are of the formats:
+
+=========================== =============================
+Version Number              Meaning
+=========================== =============================
+TAG                         On a git tag, so is a released version TAG
+TAG+DISTANCE.gHASH[.dirty]  DISTANCE commits since released version TAG, with
+                            the last commit being HASH. If dirty, then
+                            uncommitted changes have been made to the source tree
+0+untagged.gHASH[.dirty]    Cannot find a previous tag. The last commit is HASH.
+                            If dirty, then there are uncommitted changes
+0+unknown                   Cannot determine version from git
+=========================== =============================
+
 .. _versioneer:
     https://github.com/warner/python-versioneer
