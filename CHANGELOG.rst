@@ -7,7 +7,8 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 Unreleased_
 -----------
 
-Nothing yet
+- Change commandline tool to be called ``versiongit`` rather than
+  ``version-git``
 
 
 0.4_ - 2020-02-18
