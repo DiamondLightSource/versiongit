@@ -7,11 +7,16 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 Unreleased_
 -----------
 
+Nothing yet
+
+0.5_ - 2020-02-19
+-----------------
+
 - Change commandline tool to be called ``versiongit`` rather than
   ``version-git``
+- Tweak version numbers to match versioneer
 
-
-0.4_ - 2020-02-18
+0.4_ - 2020-02-19
 -----------------
 
 - Put the static version and sha1 in GIT_REFS and GIT_SHA1 rather than writing
@@ -36,7 +41,8 @@ Unreleased_
 
 - Initial release
 
-.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.4...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.5...HEAD
+.. _0.5: https://github.com/dls-controls/versiongit/compare/0.4...0.5
 .. _0.4: https://github.com/dls-controls/versiongit/compare/0.3...0.4
 .. _0.3: https://github.com/dls-controls/versiongit/compare/0.2...0.3
 .. _0.2: https://github.com/dls-controls/versiongit/compare/0.1...0.2
