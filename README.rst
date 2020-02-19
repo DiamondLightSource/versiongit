@@ -7,10 +7,10 @@ VersionGit is a tool for managing the version number of Python modules, removing
 the need to update an embedded version string whenever a Git tag is made, and
 providing sensible development version numbers too. It does this by storing a
 single file in the source repo that reads the version from ``git describe`` or
-``git archive`` keywords. At build time, a second file will be created that
-contains a static version number to be used in preference to this. This tool is
-inspired by versioneer_, but has a vastly reduced feature set so that the code
-stored in each module is minimal.
+``git archive`` keywords. At build time, this file is modified in the
+distribution to contain a static version number to be used in preference to
+this. This tool is inspired by versioneer_, but has a vastly reduced feature set
+so that the code stored in each module is minimal.
 
 Documentation
 -------------
