@@ -9,12 +9,21 @@ Unreleased_
 
 Nothing yet
 
+
+0.6_ - 2020-02-20
+-----------------
+
+- Remove -C argument from git command to support git 1.8 onwards
+- Print the git error to stderr if the git command fails
+
+
 0.5_ - 2020-02-19
 -----------------
 
 - Change commandline tool to be called ``versiongit`` rather than
   ``version-git``
 - Tweak version numbers to match versioneer
+
 
 0.4_ - 2020-02-19
 -----------------
@@ -41,7 +50,8 @@ Nothing yet
 
 - Initial release
 
-.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.5...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.6...HEAD
+.. _0.6: https://github.com/dls-controls/versiongit/compare/0.5...0.6
 .. _0.5: https://github.com/dls-controls/versiongit/compare/0.4...0.5
 .. _0.4: https://github.com/dls-controls/versiongit/compare/0.3...0.4
 .. _0.3: https://github.com/dls-controls/versiongit/compare/0.2...0.3
