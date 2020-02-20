@@ -2,7 +2,6 @@ rhel7_job:
   tags:
     - rhel7
   before_script:
-    - pipenv --rm
     - pipenv install --dev
   script:
     - pipenv run tests
