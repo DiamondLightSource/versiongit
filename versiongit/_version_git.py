@@ -22,10 +22,10 @@ def get_version_from_git(path=None):
         if path is None:
             # If no path to git repo, choose the directory this file is in
             path = os.path.dirname(os.path.abspath(__file__))
-        git_cmd = "git -C %s describe --tags --dirty --always --long" % path
+        git_cmd = "git describe --tags --dirty --always --long".split()
         # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         try:
-            out = check_output(git_cmd.split(), stderr=STDOUT).decode().strip()
+            out = check_output(git_cmd, stderr=STDOUT, cwd=path).decode().strip()
         except Exception as e:
             print("%s: %s" % (type(e).__name__, str(e)), file=sys.stderr)
             if isinstance(e, CalledProcessError):
