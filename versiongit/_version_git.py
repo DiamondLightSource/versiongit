@@ -27,9 +27,9 @@ def get_version_from_git(path=None):
         try:
             out = check_output(git_cmd, stderr=STDOUT, cwd=path).decode().strip()
         except Exception as e:
-            print("%s: %s" % (type(e).__name__, str(e)), file=sys.stderr)
+            sys.stderr.write("%s: %s\n" % (type(e).__name__, str(e)))
             if isinstance(e, CalledProcessError):
-                print("-> %s" % e.output.decode(), file=sys.stderr)
+                sys.stderr.write("-> %s" % e.output.decode())
             return "0+unknown", None, e
         else:
             if out.endswith("-dirty"):
