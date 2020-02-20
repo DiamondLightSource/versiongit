@@ -141,13 +141,18 @@ def bad_git(cmd, **kwargs):
 
 
 @patch("versiongit._version_git.check_output", bad_git)
-def test_no_git_errors():
+def test_no_git_errors(capsys):
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
         ver, sha1, err = repo.version()
         assert ver == "0+unknown"
         assert "No such file or directory" in str(err)
         assert sha1 is None
+        captured = capsys.readouterr()
+        assert not captured.out
+        lines = captured.err.splitlines()
+        assert lines[0].startswith("git -C")
+        assert "No such file or directory" in lines[1]
 
 
 def test_archive_versions():

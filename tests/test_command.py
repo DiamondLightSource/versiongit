@@ -27,7 +27,7 @@ def test_command_add_blank(capsys, tmpdir):
         main()
     lines = tmpdir.join("pkg", "_version_git.py").read().splitlines()
     assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
-    assert lines[10] == 'GIT_SHA1 = "$Format:%h$"'
+    assert lines[11] == 'GIT_SHA1 = "$Format:%h$"'
     out, err = capsys.readouterr()
     assert not err
     assert (
