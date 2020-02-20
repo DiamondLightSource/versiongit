@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-from subprocess import STDOUT, check_output
+from subprocess import STDOUT, CalledProcessError, check_output
 
 # These will be filled in if git archive is run or by setup.py cmdclasses
 GIT_REFS = "$Format:%D$"
@@ -27,7 +27,9 @@ def get_version_from_git(path=None):
         try:
             out = check_output(git_cmd.split(), stderr=STDOUT).decode().strip()
         except Exception as e:
-            print("%s\n-> %s" % (git_cmd, e), file=sys.stderr)
+            print("%s: %s" % (type(e).__name__, str(e)), file=sys.stderr)
+            if isinstance(e, CalledProcessError):
+                print("-> %s" % e.output.decode(), file=sys.stderr)
             return "0+unknown", None, e
         else:
             if out.endswith("-dirty"):

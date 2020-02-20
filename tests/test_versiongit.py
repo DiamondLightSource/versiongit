@@ -150,9 +150,7 @@ def test_no_git_errors(capsys):
         assert sha1 is None
         captured = capsys.readouterr()
         assert not captured.out
-        lines = captured.err.splitlines()
-        assert lines[0].startswith("git -C")
-        assert "No such file or directory" in lines[1]
+        assert "No such file or directory" in captured.err
 
 
 def test_archive_versions():
