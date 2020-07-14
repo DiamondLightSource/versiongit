@@ -97,7 +97,7 @@ def test_current_version_exists_and_is_str():
 
 
 def assert_records_git_error(version, sha1, error):
-    assert version == "0+unknown"
+    assert version == "0.0+unknown"
     assert isinstance(error, CalledProcessError)
     assert (
         error.output.decode().strip().lower()
@@ -109,9 +109,9 @@ def assert_records_git_error(version, sha1, error):
 def test_pre_tagged_version():
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
-        assert ("0+untagged.gb4b6df8", "b4b6df8", None) == repo.version()
+        assert ("0.0+untagged.gb4b6df8", "b4b6df8", None) == repo.version()
         repo.make_dirty()
-        assert ("0+untagged.gb4b6df8.dirty", "b4b6df8", None) == repo.version()
+        assert ("0.0+untagged.gb4b6df8.dirty", "b4b6df8", None) == repo.version()
         repo.remove_git_dir()
         assert_records_git_error(*repo.version())
 
@@ -135,6 +135,16 @@ def test_post_tagged_version():
         assert_records_git_error(*repo.version())
 
 
+def test_non_matching_tag_version():
+    with TempRepo("master") as repo:
+        repo.checkout("3440bc2")
+        assert ("0.5+3.g3440bc2", "3440bc2", None) == repo.version()
+        repo.make_dirty()
+        assert ("0.5+3.g3440bc2.dirty", "3440bc2", None) == repo.version()
+        repo.remove_git_dir()
+        assert_records_git_error(*repo.version())
+
+
 def bad_git(cmd, **kwargs):
     cmd = [x.replace("git", "bad_git") for x in cmd]
     return check_output(cmd, **kwargs)
@@ -145,7 +155,7 @@ def test_no_git_errors(capsys):
     with TempRepo("master") as repo:
         repo.checkout("b4b6df8")
         ver, sha1, err = repo.version()
-        assert ver == "0+unknown"
+        assert ver == "0.0+unknown"
         assert "No such file or directory" in str(err)
         assert sha1 is None
         captured = capsys.readouterr()
@@ -174,7 +184,7 @@ def test_mocked_ref_archive_versions(tmpdir):
 @patch("versiongit._version_git.GIT_SHA1", "1234567")
 def test_mocked_hash_archive_versions(tmpdir):
     assert versiongit._version_git.get_version_from_git(tmpdir) == (
-        "0+untagged.g1234567",
+        "0.0+untagged.g1234567",
         "1234567",
         None,
     )

@@ -103,6 +103,15 @@ to make it work
 Version Numbers
 ---------------
 
+Version numbers are taken from the git tag. These tags must be of the format
+[0-9]*[-.][0-9]* and dashes will be converted to dots. E.g.:
+
+- 0.1
+- 4.3b3
+- 3-4 (converted to 3.4)
+
+Tags not of this format will be ignored.
+
 Version numbers are of the formats:
 
 =========================== =============================
@@ -112,9 +121,9 @@ TAG                         On a git tag, so is a released version TAG
 TAG+DISTANCE.gHASH[.dirty]  DISTANCE commits since released version TAG, with
                             the last commit being HASH. If dirty, then
                             uncommitted changes have been made to the source tree
-0+untagged.gHASH[.dirty]    Cannot find a previous tag. The last commit is HASH.
+0.0+untagged.gHASH[.dirty]  Cannot find a previous tag. The last commit is HASH.
                             If dirty, then there are uncommitted changes
-0+unknown                   Cannot determine version from git
+0.0+unknown                 Cannot determine version from git
 =========================== =============================
 
 .. _versioneer:
