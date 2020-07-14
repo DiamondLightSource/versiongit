@@ -10,6 +10,13 @@ Unreleased_
 Nothing yet
 
 
+1.0_ - 2020-07-14
+-----------------
+
+- Only match tags of format [0-9]*[-.][0-9]* (E.g. 1.2.3b3)
+- Untagged version now starts with 0.0+ rather than 0+
+
+
 0.6_ - 2020-02-20
 -----------------
 
@@ -45,12 +52,14 @@ Nothing yet
 - Added git_error and git_sha1 variables for debugging
 - Lots of internal build changes
 
+
 0.1 - 2019-09-20
 ----------------
 
 - Initial release
 
-.. _Unreleased: https://github.com/dls-controls/versiongit/compare/0.6...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/1.0...HEAD
+.. _1.0: https://github.com/dls-controls/versiongit/compare/0.6...1.0
 .. _0.6: https://github.com/dls-controls/versiongit/compare/0.5...0.6
 .. _0.5: https://github.com/dls-controls/versiongit/compare/0.4...0.5
 .. _0.4: https://github.com/dls-controls/versiongit/compare/0.3...0.4
