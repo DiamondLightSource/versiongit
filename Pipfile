@@ -10,9 +10,7 @@ pytest-flake8 = "*"
 flake8-isort = "*"
 sphinx-rtd-theme = "*"
 # Pinning black stops us having to allow pre-releases globally
-black = "==19.10b0"
-# Without these lines lockfile isn't usable on multiple Python versions and platforms
-atomicwrites = "*"
+black = {version = "==19.10b0", python_version = ">= '3.6'"}
 
 [packages]
 # All other package requirements from setup.cfg

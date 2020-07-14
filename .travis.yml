@@ -14,7 +14,8 @@ python:
 install:
   - env
   - pip install coveralls
-  - pipenv install -v --dev
+  # skip lock as we can't get a consistent lock on 2.7 and 3.x
+  - pipenv install -v --dev --skip-lock
   - ls -al ${VIRTUAL_ENV}/lib/python${TRAVIS_PYTHON_VERSION}/site-packages
   - ls -al ${VIRTUAL_ENV}/bin
   - python setup.py bdist_wheel
