@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+/.pytest_cache/
+/.mypy_cache/
 
 # C extensions
 *.so
@@ -42,8 +44,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
-*.mypy_cache
-*.pytest_cache
 cov.xml
 
 # Translations
@@ -59,14 +59,12 @@ docs/_build/
 # PyBuilder
 target/
 
-# PyCharm and Eclipse and VSCode project files
+# PyCharm and Eclipse project files
 /.idea/
 /.project
 /.cproject
 /.settings/
 /.pydevproject
-/.vscode
-/.history
 
 # DLS build dir and virtual environment
 /prefix/
