@@ -168,7 +168,7 @@ def test_archive_versions():
         archive.change_version("8923f27", "HEAD -> master, tag: 0.1")
         assert "0.1" == archive.version()
         archive.change_version("b9222df")
-        assert "0+untagged.gb9222df" == archive.version()
+        assert "0.0+untagged.gb9222df" == archive.version()
 
 
 @patch("versiongit._version_git.GIT_REFS", "tag: 0.1")
