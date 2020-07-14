@@ -58,6 +58,7 @@ Nothing yet
 
 - Initial release
 
+
 .. _Unreleased: https://github.com/dls-controls/versiongit/compare/1.0...HEAD
 .. _1.0: https://github.com/dls-controls/versiongit/compare/0.6...1.0
 .. _0.6: https://github.com/dls-controls/versiongit/compare/0.5...0.6
