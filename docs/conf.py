@@ -4,30 +4,23 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-import os
-import sys
-
-
-sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..")))
-
-import versiongit  # noqa
-
 # -- General configuration ------------------------------------------------
+import versiongit
 
 # General information about the project.
 project = "versiongit"
 copyright = "2019, Diamond Light Source"
 author = "Tom Cobb"
 
-# The short X.Y version.
-version = versiongit.__version__.split("+")[0]
 # The full version, including alpha/beta/rc tags.
 release = versiongit.__version__
+
+# The short X.Y version.
+if "+" in release:
+    # Not on a tag
+    version = "master"
+else:
+    version = release
 
 extensions = [
     # Use this for generating API docs
@@ -48,13 +41,11 @@ extensions = [
 # be found.
 nitpicky = True
 
-# Don’t use a saved environment (the structure caching all cross-references),
-# but rebuild it completely.
-fresh_env = True
-
-# Turn warnings into errors. This means that the build stops at the first
-# warning and sphinx-build exits with exit status 1.
-warning_is_error = True
+# A list of (type, target) tuples (by default empty) that should be ignored when
+# generating warnings in "nitpicky mode". Note that type should include the
+# domain name if present. Example entries would be ('py:func', 'int') or
+# ('envvar', 'LD_LIBRARY_PATH').
+nitpick_ignore = [("py:func", "int")]
 
 # Both the class’ and the __init__ method’s docstring are concatenated and
 # inserted into the main body of the autoclass directive
@@ -77,7 +68,7 @@ templates_path = ["_templates"]
 source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = "contents"
+master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -105,6 +96,9 @@ rst_epilog = """
 #
 html_theme = "sphinx_rtd_theme"
 
+# Options for the sphinx rtd theme, use DLS blue
+html_theme_options = dict(style_nav_header_background="rgb(7, 43, 93)")
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
@@ -118,3 +112,7 @@ html_show_copyright = True
 
 # Override the colour in a custom css file
 html_css_files = ["theme_overrides.css"]
+
+# Logo
+html_logo = "images/dls-logo.svg"
+html_favicon = "images/dls-favicon.ico"

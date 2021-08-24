@@ -1,7 +1,7 @@
 VersionGit
 ==========
 
-|build_status| |coverage| |pypi_version| |readthedocs|
+|code_ci| |docs_ci| |coverage| |pypi_version| |license|
 
 VersionGit is a tool for managing the version number of Python modules, removing
 the need to update an embedded version string whenever a Git tag is made, and
@@ -12,32 +12,15 @@ distribution to contain a static version number to be used in preference to
 this. This tool is inspired by versioneer_, but has a vastly reduced feature set
 so that the code stored in each module is minimal.
 
-Documentation
--------------
+.. _versioneer:
+    https://github.com/warner/python-versioneer
 
-Full documentation is available at http://versiongit.readthedocs.org
-
-Source Code
------------
-
-Available from https://github.com/dls-controls/versiongit
-
-Installation
-------------
-
-To install the latest release, type::
-
-    pip install versiongit
-
-Changelog
----------
-
-See CHANGELOG_
-
-Contributing
-------------
-
-See CONTRIBUTING_
+============== ==============================================================
+PyPI           ``pip install versiongit``
+Source code    https://github.com/dls-controls/versiongit
+Documentation  https://dls-controls.github.io/versiongit
+Changelog      https://github.com/dls-controls/versiongit/blob/master/CHANGELOG.rst
+============== ==============================================================
 
 License
 -------
@@ -46,30 +29,28 @@ domain. The ``_version_git.py`` that it creates is also in the public domain.
 Specifically, both are released under the Creative Commons
 "Public Domain Dedication" license (CC0-1.0), as described in LICENSE_
 
-.. |build_status| image:: https://travis-ci.org/dls-controls/versiongit.svg?branch=master
-    :target: https://travis-ci.org/dls-controls/versiongit
-    :alt: Build Status
+.. |code_ci| image:: https://github.com/dls-controls/versiongit/workflows/Code%20CI/badge.svg?branch=master
+    :target: https://github.com/dls-controls/versiongit/actions?query=workflow%3A%22Code+CI%22
+    :alt: Code CI
 
-.. |coverage| image:: https://coveralls.io/repos/github/dls-controls/versiongit/badge.svg?branch=master
-    :target: https://coveralls.io/github/dls-controls/versiongit
-    :alt: Test coverage
+.. |docs_ci| image:: https://github.com/dls-controls/versiongit/workflows/Docs%20CI/badge.svg?branch=master
+    :target: https://github.com/dls-controls/versiongit/actions?query=workflow%3A%22Docs+CI%22
+    :alt: Docs CI
+
+.. |coverage| image:: https://codecov.io/gh/dls-controls/versiongit/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/dls-controls/versiongit
+    :alt: Test Coverage
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/versiongit.svg
-    :target: https://pypi.python.org/pypi/versiongit
+    :target: https://pypi.org/project/versiongit
     :alt: Latest PyPI version
 
-.. |readthedocs| image:: https://readthedocs.org/projects/versiongit/badge/?version=latest
-    :target: http://versiongit.readthedocs.org
-    :alt: Documentation
+.. |license| image:: https://img.shields.io/badge/License-CC0-1.0-blue.svg
+    :target: https://creativecommons.org/publicdomain/zero/1.0/
+    :alt: CC0-1.0 License
 
-.. _versioneer:
-    https://github.com/warner/python-versioneer
+..
+    These definitions are used when viewing README.rst and will be replaced
+    when included in index.rst
 
-.. _CHANGELOG:
-    https://github.com/dls-controls/versiongit/blob/master/CHANGELOG.rst
-
-.. _CONTRIBUTING:
-    https://github.com/dls-controls/versiongit/blob/master/CONTRIBUTING.rst
-
-.. _LICENSE:
-    https://github.com/dls-controls/versiongit/blob/master/LICENSE
+See https://dls-controls.github.io/versiongit for more detailed documentation.

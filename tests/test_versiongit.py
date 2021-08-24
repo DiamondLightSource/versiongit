@@ -1,5 +1,6 @@
 import os
 import shutil
+import stat
 import sys
 import zipfile
 from subprocess import CalledProcessError, check_output
@@ -39,14 +40,22 @@ class TempRepo:
         with open(path, "a") as f:
             f.write("\n")
 
+    def remove_dir(self, d):
+        # https://github.com/trufflesecurity/truffleHog/pull/15
+        def del_rw(action, name, exc):
+            os.chmod(name, stat.S_IWRITE)
+            os.remove(name)
+
+        shutil.rmtree(d, onerror=del_rw)
+
     def remove_git_dir(self):
-        shutil.rmtree(os.path.join(self.dir, ".git"))
+        self.remove_dir(os.path.join(self.dir, ".git"))
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        shutil.rmtree(self.dir)
+        self.remove_dir(self.dir)
 
 
 class TempArchive:
@@ -153,14 +162,18 @@ def bad_git(cmd, **kwargs):
 @patch("versiongit._version_git.check_output", bad_git)
 def test_no_git_errors(capsys):
     with TempRepo("master") as repo:
+        if sys.platform.startswith("win"):
+            err_msg = "The system cannot find the file specified"
+        else:
+            err_msg = "No such file or directory"
         repo.checkout("b4b6df8")
         ver, sha1, err = repo.version()
         assert ver == "0.0+unknown"
-        assert "No such file or directory" in str(err)
         assert sha1 is None
+        assert err_msg in str(err)
         captured = capsys.readouterr()
         assert not captured.out
-        assert "No such file or directory" in captured.err
+        assert err_msg in captured.err
 
 
 def test_archive_versions():
