@@ -13,13 +13,15 @@ def maybe_warn_snippet(path, *snippets):
         dest_text = ""
     if any(snippet not in dest_text for snippet in snippets):
         print(
-            """Please add the following snippet to %s:
+            """\
+Please add the following snippet to %s:
 --------------------------------------------------------------------------------
 %s
 --------------------------------------------------------------------------------
 """
             % (path, "\n".join(snippets))
         )
+    return dest_text
 
 
 def main():
@@ -76,21 +78,40 @@ def main():
             "*/_version_git.py export-subst",
         )
         # Make sure the setup.py lines are in
-        maybe_warn_snippet(
+        txt = maybe_warn_snippet(
             os.path.join(args.dir, "..", "setup.py"),
-            """# Place the directory containing _version_git on the path
+            "import glob",
+            "import importlib.util",
+            "",
+            "from setuptools import setup",
+            "",
+            "# Import <package>._version_git.py without importing <package>",
+            'path = glob.glob(__file__.replace("setup.py", "*/_version_git.py"))[0]',
+            'spec = importlib.util.spec_from_file_location("_version_git", path)',
+            "vg = importlib.util.module_from_spec(spec)",
+            "spec.loader.exec_module(vg)",
+            "",
+            "setup(",
+            "cmdclass=vg.get_cmdclass(),",
+            "version=vg.__version__",
+            ")",
+        )
+        old_method = """\
+# Place the directory containing _version_git on the path
 for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
     if "_version_git.py" in filenames:
         sys.path.append(path)
-        break
-
-from _version_git import __version__, get_cmdclass  # noqa
-""",
-            "setup(",
-            "cmdclass=get_cmdclass(),",
-            "version=__version__",
-            ")",
-        )
+        break"""
+        if old_method in txt:
+            print(
+                """\
+Removing the lines:
+--------------------------------------------------------------------------------
+%s
+--------------------------------------------------------------------------------
+"""
+                % (old_method)
+            )
 
 
 # So we can run the file directly for testing
