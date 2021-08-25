@@ -8,16 +8,25 @@ import versiongit
 from versiongit.command import main
 
 
-def test_no_command_args():
+def test_no_command_args(capsys):
     with patch("sys.argv", [sys.argv[0]]):
-        with pytest.raises(AssertionError) as excinfo:
+        with pytest.raises(SystemExit) as exc:
             main()
-    assert "Expected a python package directory, got None" == str(excinfo.value)
+    assert exc.value.code == 2
+    out, err = capsys.readouterr()
+    expected = """\
+usage: __main__.py [-h] [--version] dir
+__main__.py: error: the following arguments are required: dir
+"""
+    assert err == expected
+    assert not out
 
 
 def test_command_version(capsys):
     with patch("sys.argv", [sys.argv[0], "--version"]):
-        main()
+        with pytest.raises(SystemExit) as exc:
+            main()
+    assert exc.value.code == 0
     out, err = capsys.readouterr()
     assert not err
     assert out.strip() == versiongit.__version__
@@ -31,7 +40,8 @@ def test_command_add_blank(capsys, tmpdir):
     assert lines[11] == 'GIT_SHA1 = "$Format:%h$"'
     out, err = capsys.readouterr()
     assert not err
-    expected = """Added %(d)s|pkg|_version_git.py
+    expected = """\
+Added %(d)s|pkg|_version_git.py
 
 Please add the following snippet to %(d)s|pkg|__init__.py:
 --------------------------------------------------------------------------------
@@ -45,24 +55,25 @@ Please add the following snippet to %(d)s|.gitattributes:
 
 Please add the following snippet to %(d)s|setup.py:
 --------------------------------------------------------------------------------
-# Place the directory containing _version_git on the path
-for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
-    if "_version_git.py" in filenames:
-        sys.path.append(path)
-        break
+import glob
+import importlib.util
 
-from _version_git import __version__, get_cmdclass  # noqa
+from setuptools import setup
+
+# Import <package>._version_git.py without importing <package>
+path = glob.glob(__file__.replace("setup.py", "*/_version_git.py"))[0]
+spec = importlib.util.spec_from_file_location("_version_git", path)
+vg = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(vg)
 
 setup(
-cmdclass=get_cmdclass(),
-version=__version__
+cmdclass=vg.get_cmdclass(),
+version=vg.__version__
 )
 --------------------------------------------------------------------------------
 
-""" % dict(
-        d=tmpdir
-    )
-    assert out == expected.replace("|", os.sep)
+"""
+    assert out == expected.replace("|", os.sep) % dict(d=tmpdir)
 
 
 def test_command_update(capsys, tmpdir):
@@ -118,4 +129,36 @@ setup(
     assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
     out, err = capsys.readouterr()
     assert not err
-    assert out == "Added %s%s_version_git.py\n\n" % (pkg_dir, os.sep)
+    expected = """\
+Added %(d)s|pkg|_version_git.py
+
+Please add the following snippet to %(d)s|setup.py:
+--------------------------------------------------------------------------------
+import glob
+import importlib.util
+
+from setuptools import setup
+
+# Import <package>._version_git.py without importing <package>
+path = glob.glob(__file__.replace("setup.py", "*/_version_git.py"))[0]
+spec = importlib.util.spec_from_file_location("_version_git", path)
+vg = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(vg)
+
+setup(
+cmdclass=vg.get_cmdclass(),
+version=vg.__version__
+)
+--------------------------------------------------------------------------------
+
+Removing the lines:
+--------------------------------------------------------------------------------
+# Place the directory containing _version_git on the path
+for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
+    if "_version_git.py" in filenames:
+        sys.path.append(path)
+        break
+--------------------------------------------------------------------------------
+
+"""
+    assert out == expected.replace("|", os.sep) % dict(d=tmpdir)

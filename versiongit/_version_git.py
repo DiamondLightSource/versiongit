@@ -1,6 +1,6 @@
-import os
 import re
 import sys
+from pathlib import Path
 from subprocess import STDOUT, CalledProcessError, check_output
 
 # These will be filled in if git archive is run or by setup.py cmdclasses
@@ -24,7 +24,7 @@ def get_version_from_git(path=None):
     else:
         if path is None:
             # If no path to git repo, choose the directory this file is in
-            path = os.path.dirname(os.path.abspath(__file__))
+            path = Path(__file__).absolute().parent
         # output is TAG-NUM-gHEX[-dirty] or HEX[-dirty]
         try:
             cmd_out = check_output(CMD.split(), stderr=STDOUT, cwd=path)
@@ -49,7 +49,7 @@ def get_version_from_git(path=None):
     tag = tag.replace("-", ".")
     if plus != "0" or suffix:
         # Not on a tag, add additional info
-        tag = "%(tag)s+%(plus)s.g%(sha1)s%(suffix)s" % locals()
+        tag = f"{tag}+{plus}.g{sha1}{suffix}"
     return tag, sha1, None
 
 
@@ -64,9 +64,9 @@ def get_cmdclass(build_py=None, sdist=None):
     if sdist is None:
         from setuptools.command.sdist import sdist
 
-    def make_version_static(base_dir, pkg):
-        vg = os.path.join(base_dir, pkg.split(".")[0], "_version_git.py")
-        if os.path.isfile(vg):
+    def make_version_static(base_dir: str, pkg: str):
+        vg = Path(base_dir) / pkg.split(".")[0] / "_version_git.py"
+        if vg.is_file():
             lines = open(vg).readlines()
             with open(vg, "w") as f:
                 for line in lines:

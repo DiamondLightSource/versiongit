@@ -9,7 +9,13 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 Unreleased_
 -----------
 
-Nothing yet
+Change:
+
+- Drop Python2 support
+
+Fixed:
+
+- `Only import _version_git.py from immediate subdirectories <../../pull/7>`_
 
 
 1.0_ - 2020-07-14
