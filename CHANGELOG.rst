@@ -9,9 +9,15 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 Unreleased_
 -----------
 
-Change:
+Nothing yet
 
-- Drop Python2 support
+
+2.0_ - 2021-08-25
+-----------------
+
+Changed:
+
+- `Drop Python2 support <../../pull/9>`
 
 Fixed:
 
@@ -67,7 +73,8 @@ Fixed:
 - Initial release
 
 
-.. _Unreleased: https://github.com/dls-controls/versiongit/compare/1.0...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/2.0...HEAD
+.. _2.0: https://github.com/dls-controls/versiongit/compare/1.0...2.0
 .. _1.0: https://github.com/dls-controls/versiongit/compare/0.6...1.0
 .. _0.6: https://github.com/dls-controls/versiongit/compare/0.5...0.6
 .. _0.5: https://github.com/dls-controls/versiongit/compare/0.4...0.5
