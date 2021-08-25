@@ -29,15 +29,13 @@ Code Styling
 
 The code in this repository conforms to standards set by the following tools:
 
+- black_ for code formatting
 - flake8_ for style checks
-- flake8-black_ for code formatting
-- `flake8-isort`_ for import ordering
-- mypy_ for static type checking (for Python3.6+)
+- isort_ for import ordering
 
+.. _black: https://github.com/psf/black
 .. _flake8: http://flake8.pycqa.org/en/latest/
-.. _flake8-isort: https://github.com/gforcada/flake8-isort
-.. _flake8-black: https://github.com/peterjc/flake8-black
-.. _mypy: https://github.com/python/mypy
+.. _isort: https://github.com/timothycrosley/isort
 
 These tests will be run on code when running ``pipenv run tests`` and also
 automatically at check in. Please read the tool documentation for details
@@ -66,11 +64,14 @@ You can build the docs from the project directory by running::
     $ pipenv run docs
     $ firefox build/html/index.html
 
-Release Checklist
------------------
 
-Before a new release, please go through the following checklist:
+Release Process
+---------------
 
-* Add a release note in CHANGELOG.rst
-* Git tag the version with message from CHANGELOG
-* Push to github and travis will make a release on pypi
+To make a new release, please follow this checklist:
+
+- Choose a new PEP440 compliant release number
+- Add a release note in CHANGELOG.rst
+- Git tag the version
+- Push to github and the actions will make a release on pypi
+- Push to internal gitlab and do a dls-release.py of the tag

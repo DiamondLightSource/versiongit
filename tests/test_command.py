@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pytest
@@ -30,21 +31,19 @@ def test_command_add_blank(capsys, tmpdir):
     assert lines[11] == 'GIT_SHA1 = "$Format:%h$"'
     out, err = capsys.readouterr()
     assert not err
-    assert (
-        out
-        == """Added %(d)s/pkg/_version_git.py
+    expected = """Added %(d)s|pkg|_version_git.py
 
-Please add the following snippet to %(d)s/pkg/__init__.py:
+Please add the following snippet to %(d)s|pkg|__init__.py:
 --------------------------------------------------------------------------------
 from ._version_git import __version__
 --------------------------------------------------------------------------------
 
-Please add the following snippet to %(d)s/.gitattributes:
+Please add the following snippet to %(d)s|.gitattributes:
 --------------------------------------------------------------------------------
 */_version_git.py export-subst
 --------------------------------------------------------------------------------
 
-Please add the following snippet to %(d)s/setup.py:
+Please add the following snippet to %(d)s|setup.py:
 --------------------------------------------------------------------------------
 # Place the directory containing _version_git on the path
 for path, _, filenames in os.walk(os.path.dirname(os.path.abspath(__file__))):
@@ -60,9 +59,10 @@ version=__version__
 )
 --------------------------------------------------------------------------------
 
-"""
-        % dict(d=tmpdir)
+""" % dict(
+        d=tmpdir
     )
+    assert out == expected.replace("|", os.sep)
 
 
 def test_command_update(capsys, tmpdir):
@@ -118,4 +118,4 @@ setup(
     assert lines[3].startswith("# versiongit-%s" % versiongit.__version__)
     out, err = capsys.readouterr()
     assert not err
-    assert out == "Added %s/_version_git.py\n\n" % pkg_dir
+    assert out == "Added %s%s_version_git.py\n\n" % (pkg_dir, os.sep)
