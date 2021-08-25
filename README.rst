@@ -27,7 +27,7 @@ License
 To make VersionGit easier to embed, all its code is dedicated to the public
 domain. The ``_version_git.py`` that it creates is also in the public domain.
 Specifically, both are released under the Creative Commons
-"Public Domain Dedication" license (CC0-1.0), as described in LICENSE_
+"Public Domain Dedication" license (CC0-1.0)
 
 .. |code_ci| image:: https://github.com/dls-controls/versiongit/workflows/Code%20CI/badge.svg?branch=master
     :target: https://github.com/dls-controls/versiongit/actions?query=workflow%3A%22Code+CI%22
