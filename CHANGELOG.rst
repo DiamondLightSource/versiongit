@@ -17,7 +17,7 @@ Nothing yet
 
 Changed:
 
-- `Drop Python2 support <../../pull/9>`
+- `Drop Python2 support <../../pull/9>`_
 
 Fixed:
 
