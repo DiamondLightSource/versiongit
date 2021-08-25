@@ -45,7 +45,7 @@ Specifically, both are released under the Creative Commons
     :target: https://pypi.org/project/versiongit
     :alt: Latest PyPI version
 
-.. |license| image:: https://img.shields.io/badge/License-CC0-1.0-blue.svg
+.. |license| image:: https://img.shields.io/badge/License-CC0%201.0-blue.svg
     :target: https://creativecommons.org/publicdomain/zero/1.0/
     :alt: CC0-1.0 License
 
