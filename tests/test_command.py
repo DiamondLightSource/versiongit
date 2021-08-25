@@ -8,16 +8,25 @@ import versiongit
 from versiongit.command import main
 
 
-def test_no_command_args():
+def test_no_command_args(capsys):
     with patch("sys.argv", [sys.argv[0]]):
-        with pytest.raises(AssertionError) as excinfo:
+        with pytest.raises(SystemExit) as exc:
             main()
-    assert "Expected a python package directory, got None" == str(excinfo.value)
+    assert exc.value.code == 2
+    out, err = capsys.readouterr()
+    expected = """\
+usage: __main__.py [-h] [--version] dir
+__main__.py: error: the following arguments are required: dir
+"""
+    assert err == expected
+    assert not out
 
 
 def test_command_version(capsys):
     with patch("sys.argv", [sys.argv[0], "--version"]):
-        main()
+        with pytest.raises(SystemExit) as exc:
+            main()
+    assert exc.value.code == 0
     out, err = capsys.readouterr()
     assert not err
     assert out.strip() == versiongit.__version__
