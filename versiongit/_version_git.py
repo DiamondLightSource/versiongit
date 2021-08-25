@@ -3,6 +3,9 @@ import re
 import sys
 from subprocess import STDOUT, CalledProcessError, check_output
 
+from setuptools.command.build_py import build_py
+from setuptools.command.sdist import sdist
+
 # These will be filled in if git archive is run or by setup.py cmdclasses
 GIT_REFS = "$Format:%D$"
 GIT_SHA1 = "$Format:%h$"
@@ -56,38 +59,30 @@ def get_version_from_git(path=None):
 __version__, git_sha1, git_error = get_version_from_git()
 
 
-def get_cmdclass(build_py=None, sdist=None):
-    """Create cmdclass dict to pass to setuptools.setup that will write a
-    _version_static.py file in our resultant sdist, wheel or egg"""
-    if build_py is None:
-        from setuptools.command.build_py import build_py
-    if sdist is None:
-        from setuptools.command.sdist import sdist
+def make_version_static(base_dir, pkg):
+    vg = os.path.join(base_dir, pkg.split(".")[0], "_version_git.py")
+    if os.path.isfile(vg):
+        lines = open(vg).readlines()
+        with open(vg, "w") as f:
+            for line in lines:
+                # Replace GIT_* with static versions
+                if line.startswith("GIT_SHA1 = "):
+                    f.write("GIT_SHA1 = '%s'\n" % git_sha1)
+                elif line.startswith("GIT_REFS = "):
+                    f.write("GIT_REFS = 'tag: %s'\n" % __version__)
+                else:
+                    f.write(line)
 
-    def make_version_static(base_dir, pkg):
-        vg = os.path.join(base_dir, pkg.split(".")[0], "_version_git.py")
-        if os.path.isfile(vg):
-            lines = open(vg).readlines()
-            with open(vg, "w") as f:
-                for line in lines:
-                    # Replace GIT_* with static versions
-                    if line.startswith("GIT_SHA1 = "):
-                        f.write("GIT_SHA1 = '%s'\n" % git_sha1)
-                    elif line.startswith("GIT_REFS = "):
-                        f.write("GIT_REFS = 'tag: %s'\n" % __version__)
-                    else:
-                        f.write(line)
 
-    class BuildPy(build_py):
-        def run(self):
-            build_py.run(self)
-            for pkg in self.packages:
-                make_version_static(self.build_lib, pkg)
+class BuildPy(build_py):
+    def run(self):
+        build_py.run(self)
+        for pkg in self.packages:
+            make_version_static(self.build_lib, pkg)
 
-    class Sdist(sdist):
-        def make_release_tree(self, base_dir, files):
-            sdist.make_release_tree(self, base_dir, files)
-            for pkg in self.distribution.packages:
-                make_version_static(base_dir, pkg)
 
-    return dict(build_py=BuildPy, sdist=Sdist)
+class Sdist(sdist):
+    def make_release_tree(self, base_dir, files):
+        sdist.make_release_tree(self, base_dir, files)
+        for pkg in self.distribution.packages:
+            make_version_static(base_dir, pkg)
