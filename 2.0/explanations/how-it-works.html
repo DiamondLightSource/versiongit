@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>How it works &mdash; versiongit 2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/dls-favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Version Number Format" href="../reference/version-number-format.html" />
+    <link rel="prev" title="Make a Release" href="../how-to/make-a-release.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> versiongit
+          
+
+          
+            
+            <img src="../_static/dls-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+  <style>
+    /* style mobile top nav to look like main nav */
+    .wy-nav-top {
+        background: rgb(7, 43, 93)
+    }
+  </style>
+  
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/installation.html">Installation Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/make-a-release.html">Make a Release</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Explanations</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How it works</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#from-git">From Git</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#static-version">Static Version</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/version-number-format.html">Version Number Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+  <!-- Include link to changelog -->
+  <a href="https://github.com/dls-controls/versiongit/blob/master/CHANGELOG.rst">Changelog</a>
+  <!-- Add versions for selected branches + tags -->
+  <p class="caption"><span class="caption-text">Versions</span></p>
+  <ul id="versions"/>
+  <script>
+    // Add any branches to appear in the side pane here, tags will be added below
+    // Will only appear if docs are built and pushed in gh-pages
+    var versions = ['master', 'main'];
+    var dirs = new Set();
+    function addVersion(name) {
+      if (dirs.has(name)) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = 'https://dls-controls.github.io/versiongit/' + name;
+        a.innerText = name;
+        li.appendChild(a)
+        document.getElementById('versions').appendChild(li);
+      }
+    }
+    Promise.all([
+      // Find gh-pages directories and populate `dirs`
+      fetch("https://api.github.com/repos/dls-controls/versiongit/contents?ref=gh-pages")
+      .then(response => response.json())
+      .then(data => data.forEach(function(e) {
+        if (e.type == "dir") dirs.add(e.name);
+      })),
+      // Add tags to `versions`
+      fetch('https://api.github.com/repos/dls-controls/versiongit/tags')
+        .then(response => response.json())
+        .then(data => data.forEach(function(e) {
+          versions.push(e.name);
+        }))
+      ]).then(_ => versions.forEach(addVersion))
+  </script>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">versiongit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>How it works</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/explanations/how-it-works.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-it-works">
+<h1>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
+<p>The commandline <code class="docutils literal notranslate"><span class="pre">versiongit</span></code> tool can be used to place a <code class="docutils literal notranslate"><span class="pre">_version_git.py</span></code>
+in your repository. This produces a sensible PEP440 compliant version number
+accessible as <code class="docutils literal notranslate"><span class="pre">yourmodule.__version__</span></code>. The two ways it gets this information
+are documented below.</p>
+<div class="section" id="from-git">
+<h2>From Git<a class="headerlink" href="#from-git" title="Permalink to this headline">¶</a></h2>
+<p>At development time when running from a Git repository, the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">describe</span></code>
+command is used to work out the version number of the module. If the module
+is on a tag, the version name will just be the tag name, otherwise it will
+be suffixed with the number of commits since a tag and the sha1. This
+<code class="docutils literal notranslate"><span class="pre">__version__</span></code> variable can then be imported into your module namespace with
+a <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">_version_git</span> <span class="pre">import</span> <span class="pre">__version__</span></code> statement in the top level
+<code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>:</p>
+<div class="graphviz"><object data="../_images/graphviz-3dc354ce5e749fa2218ed0502111a6b98abe75ea.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph from_git {
+bgcolor=transparent
+node [fontname=Arial fontsize=10 shape=box style=filled fillcolor=&quot;#f54d27&quot;]
+edge [fontname=Arial fontsize=10 arrowhead=vee]
+
+vgv [label=&quot;yourmodule._version_git.__version__&quot;]
+vg [label=&quot;yourmodule._version_git.get_version_from_git&quot;]
+Git
+v [label=&quot;yourmodule.__version__&quot;]
+
+vgv -&gt; vg [label=&quot;get_version_from_git()&quot;]
+vg -&gt; Git [label=&quot;describe --tags ...&quot;]
+Git -&gt; vg [label=&quot;0.1-3-gabc1234&quot;]
+vg -&gt; vgv [label=&quot;0.1+3.abc1234&quot;]
+vgv -&gt; v [label=&quot;0.1+3.abc1234&quot;]
+}</p></object></div>
+</div>
+<div class="section" id="static-version">
+<h2>Static Version<a class="headerlink" href="#static-version" title="Permalink to this headline">¶</a></h2>
+<p>There are two times when we can’t get the version number from git:</p>
+<ol class="arabic simple">
+<li><p>When running from a source archive produced by a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">archive</span></code> command</p></li>
+<li><p>When running from an installed sdist, egg or wheel</p></li>
+</ol>
+<p>To handle the first case, <code class="docutils literal notranslate"><span class="pre">_version_git.py</span></code> contains a <code class="docutils literal notranslate"><span class="pre">GIT_REFS</span></code> variable
+that will be substituted by the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">archive</span></code> command. This will contain the
+tag name among other things.</p>
+<p>For the second case, <code class="docutils literal notranslate"><span class="pre">_version_git.py</span></code> contains some command classes that can
+be used in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> when creating an <code class="docutils literal notranslate"><span class="pre">sdist</span></code>, <code class="docutils literal notranslate"><span class="pre">bidst_egg</span></code> or
+<code class="docutils literal notranslate"><span class="pre">bdist_wheel</span></code>. These command classes substitute the <code class="docutils literal notranslate"><span class="pre">GIT_REFS</span></code> variable in
+the distribution, replacing it with the static version from Git.</p>
+<p>Both cases produce a <code class="docutils literal notranslate"><span class="pre">_version_git.py</span></code> that computes the version number from
+<code class="docutils literal notranslate"><span class="pre">GIT_REFS</span></code> rather than from a <code class="docutils literal notranslate"><span class="pre">git</span></code> command:</p>
+<div class="graphviz"><object data="../_images/graphviz-6c335e659a1b284c0d51c661859517b582e9c3b8.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph static_version {
+bgcolor=transparent
+node [fontname=Arial fontsize=10 shape=box style=filled fillcolor=&quot;#f54d27&quot;]
+edge [fontname=Arial fontsize=10 arrowhead=vee]
+
+vgv [label=&quot;yourmodule._version_git.__version__&quot;]
+vga [label=&quot;yourmodule._version_git.GIT_REFS&quot;]
+vg [label=&quot;yourmodule._version_git.get_version_from_git&quot;]
+v [label=&quot;yourmodule.__version__&quot;]
+
+vgv -&gt; vg [label=&quot;get_version_from_git()&quot;]
+vga -&gt; vg [label=&quot;tag: 0.1&quot;]
+vg -&gt; vgv [label=&quot;0.1&quot;]
+vgv -&gt; v [label=&quot;0.1&quot;]
+}</p></object></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../reference/version-number-format.html" class="btn btn-neutral float-right" title="Version Number Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../how-to/make-a-release.html" class="btn btn-neutral float-left" title="Make a Release" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, Diamond Light Source.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
