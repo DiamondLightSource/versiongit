@@ -3,8 +3,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 
-def maybe_warn_snippet(path: Path, *snippets: str):
-    # type: (str, str) -> None
+def maybe_warn_snippet(path: Path, *snippets: str) -> str:
     if path.exists():
         dest_text = path.read_text()
     else:
@@ -22,7 +21,7 @@ Please add the following snippet to {path.absolute()}:
     return dest_text
 
 
-def main():
+def main() -> None:
     from versiongit import __version__
 
     parser = ArgumentParser(
@@ -68,6 +67,7 @@ def main():
     # Make sure the setup.py lines are in
     txt = maybe_warn_snippet(
         package_dir.parent / "setup.py",
+        "# type: ignore",
         "import glob",
         "import importlib.util",
         "",

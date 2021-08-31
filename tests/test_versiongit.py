@@ -5,8 +5,7 @@ import sys
 import zipfile
 from subprocess import CalledProcessError, check_output
 from tempfile import mkdtemp
-
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import versiongit
 from versiongit._version_git import get_cmdclass
