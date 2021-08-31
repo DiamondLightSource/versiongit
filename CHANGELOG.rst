@@ -12,6 +12,14 @@ Unreleased_
 Nothing yet
 
 
+2.1_ - 2021-08-31
+-----------------
+
+Fixed:
+
+- `Make setup.py snippet mypy compatible <../../pull/10>`_
+
+
 2.0_ - 2021-08-25
 -----------------
 
@@ -73,7 +81,8 @@ Fixed:
 - Initial release
 
 
-.. _Unreleased: https://github.com/dls-controls/versiongit/compare/2.0...HEAD
+.. _Unreleased: https://github.com/dls-controls/versiongit/compare/2.1...HEAD
+.. _2.1: https://github.com/dls-controls/versiongit/compare/2.0...2.1
 .. _2.0: https://github.com/dls-controls/versiongit/compare/1.0...2.0
 .. _1.0: https://github.com/dls-controls/versiongit/compare/0.6...1.0
 .. _0.6: https://github.com/dls-controls/versiongit/compare/0.5...0.6
