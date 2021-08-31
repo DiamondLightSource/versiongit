@@ -1,8 +1,8 @@
 import os
 import sys
+from unittest.mock import patch
 
 import pytest
-from mock import patch
 
 import versiongit
 from versiongit.command import main
@@ -55,6 +55,7 @@ Please add the following snippet to %(d)s|.gitattributes:
 
 Please add the following snippet to %(d)s|setup.py:
 --------------------------------------------------------------------------------
+# type: ignore
 import glob
 import importlib.util
 
@@ -134,6 +135,7 @@ Added %(d)s|pkg|_version_git.py
 
 Please add the following snippet to %(d)s|setup.py:
 --------------------------------------------------------------------------------
+# type: ignore
 import glob
 import importlib.util
 

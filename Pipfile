@@ -8,12 +8,16 @@ verify_ssl = true
 black = {version = "==19.10b0", python_version = ">= '3.6'"}
 
 # Pins to make lockfile usable on multiple Python versions and platforms
+mypy = "*"
 atomicwrites = "*"
 typing-extensions = "*"
+importlib-metadata = "*"
+typed-ast = "*"
 
 # Test and docs dependencies
 mock = "*"
 pytest-cov = "*"
+pytest-mypy = "*"
 pytest-black = "*"
 pytest-flake8 = "*"
 flake8-isort = "*"

@@ -1,3 +1,4 @@
+# type: ignore
 import glob
 import importlib.util
 
