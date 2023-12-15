@@ -3,7 +3,8 @@ VersionGit
 
 |code_ci| |docs_ci| |coverage| |pypi_version| |license|
 
-.. warning:
+.. warning::
+
     This has been deprecated in favour of setuptools_scm and is no longer maintained
 
 VersionGit is a tool for managing the version number of Python modules, removing
